@@ -1,10 +1,10 @@
 Package: networker
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Title: Functions for Reproducible PPI Network Creation and Visualization in R
+Version: 0.0.01
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+    person("Travis", "Blimkie", , "travis.m.blimkie@gmail.com", role = c("aut", "cre"))
+Description: A suite of functions to make it simple to construct PPI networks
+  inside of R, with an emphasis on usability and reproducibility. 
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
