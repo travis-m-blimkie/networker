@@ -1,27 +1,28 @@
 #' Plot an undirected network using ggraph
 #'
-#' @param network `tidygraph` object, output from `build_netork`
-#' @param layout Layout of nodes in the network. Supports all layouts from
-#'   `ggraph`/`igraph`, as well as "force_atlas" (see Details)
+#' @param network `tidygraph` object, output from `build_network`
 #' @param fill_column Tidy-select column for mapping node colour. The colour
 #'   scale set up is green-white-red, designed to map to fold change values
+#' @param layout Layout of nodes in the network. Supports all layouts from
+#'   `ggraph`/`igraph`, as well as "force_atlas" (see Details)
 #' @param edge_colour Edge colour, defaults to "grey50"
 #' @param edge_alpha Transparency of edges, defaults to 0.2
 #' @param label Boolean, whether labels should be added to nodes. Defaults to
 #'   FALSE. Note when TRUE, only seed nodes receive labels.
+#' @param label_column Tidy-select column of the network/data to be used in
+#'   labeling nodes.
 #' @param label_filter Degree filter used to determine if a given node should be
 #'   labeled. Defaults to 40. This value can be tweaked to reduce the number of
 #'   node labels, to prevent the network from being too crowded.
-#' @param label_column Tidy-select column of the network/data to be used in
-#'   labeling nodes.
 #' @param label_size Size of node labels, defaults to 4.
 #' @param label_colour Colour of node labels, defaults to "black"
 #' @param label_face Font face for node labels, defaults to "bold"
+#' @param seed Number used in call to `set.seed()` to allow for reproducible
+#'   network generation
 #'
-#' @return
+#' @return An object of class "gg"
 #' @export
 #'
-#' @import tidygraph
 #' @import ggraph
 #' @import dplyr
 #'
@@ -40,12 +41,13 @@ plot_network <- function(
   label_filter = 40,
   label_size   = 4,
   label_colour = "black",
-  label_face   = "bold"
+  label_face   = "bold",
+  seed         = 1
 ) {
 
   if (layout == "force_atlas") {
     message("Calculating Force Atlas node positions...")
-    set.seed(1)
+    set.seed(seed)
     layout_object <- ForceAtlas2::layout.forceatlas2(
       graph    = network,
       directed = FALSE,

@@ -4,7 +4,7 @@
 \alias{build_network}
 \title{Construct a PPI network from input genes and InnateDB's database}
 \usage{
-build_network(df, col, order, ppi_data)
+build_network(df, col, order, ppi_data, seed = 1)
 }
 \arguments{
 \item{df}{Input data frame containing genes of interest}
@@ -17,9 +17,12 @@ build_network(df, col, order, ppi_data)
 \item{ppi_data}{Data frame of InnateDB PPI data; minimally should contain
 rows of interactions as pairs of Ensembl gene IDs, e.g. "ensembl_gene_A"
 and "ensembl_gene_B"}
+
+\item{seed}{Number used in call to \code{set.seed()} to allow for reproducible
+network generation}
 }
 \value{
-\code{tidygraph} object for plotting
+\code{tidygraph} object for plotting or further analysis
 }
 \description{
 Construct a PPI network from input genes and InnateDB's database

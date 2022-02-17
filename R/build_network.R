@@ -7,8 +7,10 @@
 #' @param ppi_data Data frame of InnateDB PPI data; minimally should contain
 #'   rows of interactions as pairs of Ensembl gene IDs, e.g. "ensembl_gene_A"
 #'   and "ensembl_gene_B"
+#' @param seed Number used in call to `set.seed()` to allow for reproducible
+#'   network generation
 #'
-#' @return `tidygraph` object for plotting
+#' @return `tidygraph` object for plotting or further analysis
 #' @export
 #'
 #' @importFrom igraph V components induced_subgraph
@@ -19,7 +21,7 @@
 #'
 #' @seealso <https://www.github.com/travis-m-blimkie/networker>
 #'
-build_network <- function(df, col, order, ppi_data) {
+build_network <- function(df, col, order, ppi_data, seed = 1) {
 
   remove_subnetworks <- function(graph) {
     V(graph)$comp <- components(graph)$membership
@@ -77,7 +79,7 @@ build_network <- function(df, col, order, ppi_data) {
   } else if (order == "min_steiner") {
 
     message("Performing 'Steiner' minimum network trimming...")
-    set.seed(1)
+    set.seed(seed)
 
     terminals <- network %>%
       activate(nodes) %>%

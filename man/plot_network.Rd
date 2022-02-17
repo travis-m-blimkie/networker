@@ -15,11 +15,12 @@ plot_network(
   label_filter = 40,
   label_size = 4,
   label_colour = "black",
-  label_face = "bold"
+  label_face = "bold",
+  seed = 1
 )
 }
 \arguments{
-\item{network}{\code{tidygraph} object, output from \code{build_netork}}
+\item{network}{\code{tidygraph} object, output from \code{build_network}}
 
 \item{fill_column}{Tidy-select column for mapping node colour. The colour
 scale set up is green-white-red, designed to map to fold change values}
@@ -46,9 +47,12 @@ node labels, to prevent the network from being too crowded.}
 \item{label_colour}{Colour of node labels, defaults to "black"}
 
 \item{label_face}{Font face for node labels, defaults to "bold"}
+
+\item{seed}{Number used in call to \code{set.seed()} to allow for reproducible
+network generation}
 }
 \value{
-
+An object of class "gg"
 }
 \description{
 Plot an undirected network using ggraph
