@@ -13,7 +13,6 @@
 #' @return `tidygraph` object for plotting or further analysis
 #' @export
 #'
-#' @importFrom igraph V components induced_subgraph
 #' @import dplyr
 #' @import tidygraph
 #'
@@ -22,11 +21,6 @@
 #' @seealso <https://www.github.com/travis-m-blimkie/networker>
 #'
 build_network <- function(df, col, order, ppi_data, seed = 1) {
-
-  remove_subnetworks <- function(graph) {
-    igraph::V(graph)$comp <- components(graph)$membership
-    induced_subgraph(graph, igraph::V(graph)$comp == 1)
-  }
 
   gene_vector <- df[[col]]
 
@@ -58,9 +52,9 @@ build_network <- function(df, col, order, ppi_data, seed = 1) {
 
   message("Creating network...")
   network <- edge_table %>%
-    as_tbl_graph(directed = FALSE) %>%
+    tidygraph::as_tbl_graph(directed = FALSE) %>%
     remove_subnetworks() %>%
-    as_tbl_graph(directed = FALSE) %>%
+    tidygraph::as_tbl_graph() %>%
     mutate(
       degree      = centrality_degree(),
       betweenness = centrality_betweenness(),
@@ -94,6 +88,8 @@ build_network <- function(df, col, order, ppi_data, seed = 1) {
     ) %>%
       magrittr::extract2(1) %>%
       as_tbl_graph()
+  } else {
+    network <- network
   }
 
   message("Done.")
