@@ -32,8 +32,8 @@ BiocManager::install("biomaRt")
 # x dplyr::lag()    masks stats::lag()
 
 > library(networker)
-# Thanks for using networker v0.0.11! If you encounter any bugs or problems, 
-# please submit an issue at the Github page: 
+# Thanks for using networker! If you encounter any bugs or problems, please 
+# submit an issue at the Github page: 
 # https://github.com/travis-m-blimkie/networker/issues
 
 > fetch_ppi_data()
