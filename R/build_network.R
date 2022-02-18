@@ -24,8 +24,8 @@
 build_network <- function(df, col, order, ppi_data, seed = 1) {
 
   remove_subnetworks <- function(graph) {
-    V(graph)$comp <- components(graph)$membership
-    induced_subgraph(graph, V(graph)$comp == 1)
+    igraph::V(graph)$comp <- components(graph)$membership
+    induced_subgraph(graph, igraph::V(graph)$comp == 1)
   }
 
   gene_vector <- df[[col]]
