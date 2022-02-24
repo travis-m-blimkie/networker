@@ -1,6 +1,6 @@
 #' Find and return the largest subnetwork
 #'
-#' @param input
+#' @param input Graph object
 #'
 #' @return Largest subnetwork from the input network list as an igraph object
 #'

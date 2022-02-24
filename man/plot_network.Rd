@@ -16,6 +16,7 @@ plot_network(
   label_size = 4,
   label_colour = "black",
   label_face = "bold",
+  label_padding = 0.25,
   seed = 1
 )
 }
@@ -47,6 +48,8 @@ node labels, to prevent the network from being too crowded.}
 \item{label_colour}{Colour of node labels, defaults to "black"}
 
 \item{label_face}{Font face for node labels, defaults to "bold"}
+
+\item{label_padding}{Padding around the label, defaults to 0.25 lines.}
 
 \item{seed}{Number used in call to \code{set.seed()} to allow for reproducible
 network generation}

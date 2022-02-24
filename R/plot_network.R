@@ -17,6 +17,7 @@
 #' @param label_size Size of node labels, defaults to 4.
 #' @param label_colour Colour of node labels, defaults to "black"
 #' @param label_face Font face for node labels, defaults to "bold"
+#' @param label_padding Padding around the label, defaults to 0.25 lines.
 #' @param seed Number used in call to `set.seed()` to allow for reproducible
 #'   network generation
 #'
@@ -33,16 +34,17 @@
 plot_network <- function(
   network,
   fill_column,
-  layout       = "kk",
-  edge_colour  = "grey50",
-  edge_alpha   = 0.2,
-  label        = FALSE,
+  layout        = "kk",
+  edge_colour   = "grey50",
+  edge_alpha    = 0.2,
+  label         = FALSE,
   label_column,
-  label_filter = 40,
-  label_size   = 4,
-  label_colour = "black",
-  label_face   = "bold",
-  seed         = 1
+  label_filter  = 40,
+  label_size    = 4,
+  label_colour  = "black",
+  label_face    = "bold",
+  label_padding = 0.25,
+  seed          = 1
 ) {
 
   if (layout == "force_atlas") {
@@ -82,7 +84,8 @@ plot_network <- function(
         repel         = TRUE,
         colour        = label_colour,
         fontface      = label_face,
-        check_overlap = TRUE
+        check_overlap = TRUE,
+        box.padding   = label_padding
       ) +
       scale_size_continuous(range = c(3, 9), guide = "none") +
       theme(plot.margin = unit(rep(0.05, 4), "cm"))
