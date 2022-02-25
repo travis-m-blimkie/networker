@@ -16,7 +16,11 @@
 #' @import dplyr
 #' @import tidygraph
 #'
-#' @references None.
+#' @details The "min_steinder" method is implemented with the `SteinerNet`
+#'   package.
+#'
+#' @references See <https://cran.r-project.org/web/packages/SteinerNet/index.html>
+#'   for details on the Steiner network trimming.
 #'
 #' @seealso <https://www.github.com/travis-m-blimkie/networker>
 #'
@@ -51,7 +55,7 @@ build_network <- function(df, col, order, ppi_data = innatedb, seed = 1) {
   }
 
   message("Creating network...")
-  network <- edge_table %>%
+  network_init <- edge_table %>%
     tidygraph::as_tbl_graph(directed = FALSE) %>%
     remove_subnetworks() %>%
     tidygraph::as_tbl_graph() %>%
@@ -67,31 +71,41 @@ build_network <- function(df, col, order, ppi_data = innatedb, seed = 1) {
   if (order == "min_simple") {
 
     message("Performing 'simple' minimum network trimming...")
-    network <- filter(
-      network,
-      !(degree == 1 & !seed),
-      !(betweenness == 0 & !seed)
-    )
+    network_out <- network_init %>%
+      filter(
+        !(degree == 1 & !seed),
+        !(betweenness == 0 & !seed)
+      ) %>%
+      mutate(
+        degree      = centrality_degree(),
+        betweenness = centrality_betweenness(),
+      )
   } else if (order == "min_steiner") {
 
     message("Performing 'Steiner' minimum network trimming...")
     set.seed(seed)
 
-    terminals <- network %>%
+    terminals <- network_init %>%
       activate(nodes) %>%
       pull(name) %>%
       intersect(gene_vector)
 
-    network <- SteinerNet::steinertree(
+    network_out <- SteinerNet::steinertree(
       type      = "SP",
       terminals = terminals,
-      graph     = network,
+      graph     = network_init,
       color     = FALSE
     ) %>%
       magrittr::extract2(1) %>%
-      as_tbl_graph()
+      as_tbl_graph() %>%
+      mutate(
+        degree      = centrality_degree(),
+        betweenness = centrality_betweenness(),
+      )
+  } else {
+    network_out <- network_init
   }
 
   message("Done.")
-  network %>% left_join(df, by = c("name" = col))
+  network_out %>% left_join(df, by = c("name" = col))
 }

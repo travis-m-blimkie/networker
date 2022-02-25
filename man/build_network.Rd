@@ -4,7 +4,7 @@
 \alias{build_network}
 \title{Construct a PPI network from input genes and InnateDB's database}
 \usage{
-build_network(df, col, order, ppi_data, seed = 1)
+build_network(df, col, order, ppi_data = innatedb, seed = 1)
 }
 \arguments{
 \item{df}{Input data frame containing genes of interest}
@@ -14,9 +14,9 @@ build_network(df, col, order, ppi_data, seed = 1)
 \item{order}{Desired network order. Possible options are "zero" (default),
 "first," "min_simple," or "min_steiner."}
 
-\item{ppi_data}{Data frame of InnateDB PPI data; must contain rows of
-interactions as pairs of Ensembl gene IDs, with columns named
-"ensembl_gene_A" and "ensembl_gene_B"}
+\item{ppi_data}{Data frame of PPI data; must contain rows of interactions as
+pairs of Ensembl gene IDs, with columns named "ensembl_gene_A" and
+"ensembl_gene_B". Defaults to pre-packaged InnateDB PPI data.}
 
 \item{seed}{Number used in call to \code{set.seed()} to allow for reproducible
 network generation}
