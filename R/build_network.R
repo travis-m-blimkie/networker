@@ -4,9 +4,9 @@
 #' @param col Column of input genes as Ensembl IDs (character)
 #' @param order Desired network order. Possible options are "zero" (default),
 #'   "first," "min_simple," or "min_steiner."
-#' @param ppi_data Data frame of InnateDB PPI data; minimally should contain
-#'   rows of interactions as pairs of Ensembl gene IDs, e.g. "ensembl_gene_A"
-#'   and "ensembl_gene_B"
+#' @param ppi_data Data frame of PPI data; must contain rows of interactions as
+#'   pairs of Ensembl gene IDs, with columns named "ensembl_gene_A" and
+#'   "ensembl_gene_B". Defaults to pre-packaged InnateDB PPI data.
 #' @param seed Number used in call to `set.seed()` to allow for reproducible
 #'   network generation
 #'
@@ -20,7 +20,7 @@
 #'
 #' @seealso <https://www.github.com/travis-m-blimkie/networker>
 #'
-build_network <- function(df, col, order, ppi_data, seed = 1) {
+build_network <- function(df, col, order, ppi_data = innatedb, seed = 1) {
 
   gene_vector <- df[[col]]
 
@@ -62,6 +62,8 @@ build_network <- function(df, col, order, ppi_data, seed = 1) {
     ) %>%
     dplyr::select(-comp)
 
+
+  # Perform node filtering/trimming for minimum order networks
   if (order == "min_simple") {
 
     message("Performing 'simple' minimum network trimming...")
@@ -88,8 +90,6 @@ build_network <- function(df, col, order, ppi_data, seed = 1) {
     ) %>%
       magrittr::extract2(1) %>%
       as_tbl_graph()
-  } else {
-    network <- network
   }
 
   message("Done.")

@@ -14,9 +14,9 @@ build_network(df, col, order, ppi_data, seed = 1)
 \item{order}{Desired network order. Possible options are "zero" (default),
 "first," "min_simple," or "min_steiner."}
 
-\item{ppi_data}{Data frame of InnateDB PPI data; minimally should contain
-rows of interactions as pairs of Ensembl gene IDs, e.g. "ensembl_gene_A"
-and "ensembl_gene_B"}
+\item{ppi_data}{Data frame of InnateDB PPI data; must contain rows of
+interactions as pairs of Ensembl gene IDs, with columns named
+"ensembl_gene_A" and "ensembl_gene_B"}
 
 \item{seed}{Number used in call to \code{set.seed()} to allow for reproducible
 network generation}
