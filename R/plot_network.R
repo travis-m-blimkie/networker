@@ -1,4 +1,4 @@
-#' Plot an undirected network using ggraph
+#' Plot an undirected PPI network using ggraph
 #'
 #' @param network `tidygraph` object, output from `build_network`
 #' @param fill_column Tidy-select column for mapping node colour. The colour
@@ -9,12 +9,14 @@
 #' @param edge_alpha Transparency of edges, defaults to 0.2
 #' @param node_size Numeric vector of length two, specifying size range of nodes
 #' (maps to node degree). Default is `c(3, 9)`.
+#' @param int_colour Fill colour for non-seed nodes, i.e. interactors. Defaults
+#'   to "grey70"
 #' @param label Boolean, whether labels should be added to nodes. Defaults to
 #'   FALSE. Note when TRUE, only seed nodes receive labels.
 #' @param label_column Tidy-select column of the network/data to be used in
 #'   labeling nodes.
 #' @param label_filter Degree filter used to determine if a given node should be
-#'   labeled. Defaults to 40. This value can be tweaked to reduce the number of
+#'   labeled. Defaults to 0. This value can be tweaked to reduce the number of
 #'   node labels, to prevent the network from being too crowded.
 #' @param label_size Size of node labels, defaults to 4.
 #' @param label_colour Colour of node labels, defaults to "black"
@@ -29,9 +31,15 @@
 #' @import ggraph
 #' @import dplyr
 #'
-#' @references None.
+#' @details Any layout supported by ggraph can be specified here - see
+#'   `?layout_tbl_graph_igraph` for a list of options. Additionally, there is
+#'   support for the "force_atlas" method, implemented via the ForceAtlas2
+#'   package
 #'
-#' @seealso <https://www.github.com/travis-m-blimkie/networker>
+#' @references See <https://github.com/analyxcompany/ForceAtlas2> for details on
+#'   this method.
+#'
+#' @seealso <https://github.com/travis-m-blimkie/networker>
 #'
 plot_network <- function(
   network,
@@ -40,9 +48,10 @@ plot_network <- function(
   edge_colour   = "grey50",
   edge_alpha    = 0.2,
   node_size     = c(3, 9),
+  int_colour    = "grey70",
   label         = FALSE,
   label_column,
-  label_filter  = 40,
+  label_filter  = 0,
   label_size    = 4,
   label_colour  = "black",
   label_face    = "bold",
@@ -76,10 +85,11 @@ plot_network <- function(
       geom_edge_link(show.legend = FALSE, alpha = edge_alpha, colour = edge_colour) +
       geom_node_point(aes(size = degree, fill = {{fill_column}}), pch = 21) +
       scale_fill_gradient2(
-        low   = "springgreen4",
-        mid   = "white",
-        high  = "firebrick",
-        guide = "none"
+        low      = "springgreen4",
+        mid      = "white",
+        high     = "firebrick",
+        na.value = int_colour,
+        guide    = "none"
       ) +
       geom_node_text(
         aes(label = node_label),
@@ -97,10 +107,11 @@ plot_network <- function(
       geom_edge_link(show.legend = FALSE, alpha = edge_alpha, colour = edge_colour) +
       geom_node_point(aes(size = degree, fill = {{fill_column}}), pch = 21) +
       scale_fill_gradient2(
-        low   = "springgreen4",
-        mid   = "white",
-        high  = "firebrick",
-        guide = "none"
+        low      = "springgreen4",
+        mid      = "white",
+        high     = "firebrick",
+        na.value = int_colour,
+        guide    = "none"
       ) +
       scale_size_continuous(range = node_size, guide = "none") +
       theme(plot.margin = unit(rep(0.05, 4), "cm"))

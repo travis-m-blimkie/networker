@@ -11,6 +11,7 @@ plot_network(
   edge_colour = "grey50",
   edge_alpha = 0.2,
   node_size = c(3, 9),
+  int_colour = "grey70",
   label = FALSE,
   label_column,
   label_filter = 40,
@@ -36,6 +37,9 @@ scale set up is green-white-red, designed to map to fold change values}
 
 \item{node_size}{Numeric vector of length two, specifying size range of nodes
 (maps to node degree). Default is \code{c(3, 9)}.}
+
+\item{int_colour}{Fill colour for non-seed nodes, i.e. interactors. Defaults
+to "grey70"}
 
 \item{label}{Boolean, whether labels should be added to nodes. Defaults to
 FALSE. Note when TRUE, only seed nodes receive labels.}
@@ -64,9 +68,16 @@ An object of class "gg"
 \description{
 Plot an undirected network using ggraph
 }
+\details{
+Any layout supported by ggraph can be specified here - see
+\code{?layout_tbl_graph_igraph}for a list of options. Additionally, there is
+support for the "force_atlas" method, implemented via the ForceAtlas2
+package
+}
 \references{
-None.
+See \url{https://github.com/analyxcompany/ForceAtlas2} for detals on
+this method.
 }
 \seealso{
-\url{https://www.github.com/travis-m-blimkie/networker}
+\url{https://github.com/travis-m-blimkie/networker}
 }
