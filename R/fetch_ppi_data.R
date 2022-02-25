@@ -11,7 +11,9 @@
 #'
 #' @description Pull human PPI data from InnateDB and format for use in building
 #'   networks. The data frame of PPIs is saved as an Rds file in the chosen
-#'   directory (defaults to the current working directory).
+#'   directory (defaults to the current working directory). This function was
+#'   used to generate the prepackaged `innatedb` object used by defaut in
+#'   network construction.
 #'
 #' @references None.
 #'
