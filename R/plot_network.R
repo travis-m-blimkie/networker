@@ -7,6 +7,8 @@
 #'   `ggraph`/`igraph`, as well as "force_atlas" (see Details)
 #' @param edge_colour Edge colour, defaults to "grey50"
 #' @param edge_alpha Transparency of edges, defaults to 0.2
+#' @param node_size Numeric vector of length two, specifying size range of nodes
+#' (maps to node degree). Default is `c(3, 9)`.
 #' @param label Boolean, whether labels should be added to nodes. Defaults to
 #'   FALSE. Note when TRUE, only seed nodes receive labels.
 #' @param label_column Tidy-select column of the network/data to be used in
@@ -37,6 +39,7 @@ plot_network <- function(
   layout        = "kk",
   edge_colour   = "grey50",
   edge_alpha    = 0.2,
+  node_size     = c(3, 9),
   label         = FALSE,
   label_column,
   label_filter  = 40,
@@ -87,7 +90,7 @@ plot_network <- function(
         check_overlap = TRUE,
         box.padding   = label_padding
       ) +
-      scale_size_continuous(range = c(3, 9), guide = "none") +
+      scale_size_continuous(range = node_size, guide = "none") +
       theme(plot.margin = unit(rep(0.05, 4), "cm"))
   } else {
     ggraph(network, layout = layout_object) +
@@ -99,7 +102,7 @@ plot_network <- function(
         high  = "firebrick",
         guide = "none"
       ) +
-      scale_size_continuous(range = c(3, 9), guide = "none") +
+      scale_size_continuous(range = node_size, guide = "none") +
       theme(plot.margin = unit(rep(0.05, 4), "cm"))
   }
 }

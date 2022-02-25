@@ -10,6 +10,7 @@ plot_network(
   layout = "kk",
   edge_colour = "grey50",
   edge_alpha = 0.2,
+  node_size = c(3, 9),
   label = FALSE,
   label_column,
   label_filter = 40,
@@ -32,6 +33,9 @@ scale set up is green-white-red, designed to map to fold change values}
 \item{edge_colour}{Edge colour, defaults to "grey50"}
 
 \item{edge_alpha}{Transparency of edges, defaults to 0.2}
+
+\item{node_size}{Numeric vector of length two, specifying size range of nodes
+(maps to node degree). Default is \code{c(3, 9)}.}
 
 \item{label}{Boolean, whether labels should be added to nodes. Defaults to
 FALSE. Note when TRUE, only seed nodes receive labels.}
