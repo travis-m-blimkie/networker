@@ -41,7 +41,7 @@ fetch_ppi_data <- function(dir = getwd()) {
       "ensembl_gene_A" = alt_identifier_A,
       "ensembl_gene_B" = alt_identifier_B
     ) %>%
-    mutate(across(everything(), str_remove, pattern = "ensembl\\:"))
+    mutate(across(everything(), stringr::str_remove, pattern = "ensembl\\:"))
 
   # Get gene mapping from biomaRt
   message("Retrieving gene mapping data from biomaRt...")
