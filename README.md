@@ -87,6 +87,8 @@ BiocManager::install("biomaRt")
 # Removed 221 rows containing missing values (geom_text_repel).
 ```
 
+<br>
+
 ![](man/figures/network_example.png)
 
 ## Versioning
