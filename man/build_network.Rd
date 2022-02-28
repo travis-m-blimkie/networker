@@ -27,8 +27,13 @@ network generation}
 \description{
 Construct a PPI network from input genes and InnateDB's database
 }
+\details{
+The "min_steinder" method is implemented with the \code{SteinerNet}
+package.
+}
 \references{
-None.
+See \url{https://cran.r-project.org/web/packages/SteinerNet/index.html}
+for details on the Steiner network trimming.
 }
 \seealso{
 \url{https://www.github.com/travis-m-blimkie/networker}
