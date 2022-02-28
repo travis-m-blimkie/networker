@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_network.R
 \name{plot_network}
 \alias{plot_network}
-\title{Plot an undirected network using ggraph}
+\title{Plot an undirected PPI network using ggraph}
 \usage{
 plot_network(
   network,
@@ -14,11 +14,12 @@ plot_network(
   int_colour = "grey70",
   label = FALSE,
   label_column,
-  label_filter = 40,
+  label_filter = 0,
   label_size = 4,
   label_colour = "black",
   label_face = "bold",
   label_padding = 0.25,
+  min_seg_length = 0.25,
   seed = 1
 )
 }
@@ -48,7 +49,7 @@ FALSE. Note when TRUE, only seed nodes receive labels.}
 labeling nodes.}
 
 \item{label_filter}{Degree filter used to determine if a given node should be
-labeled. Defaults to 40. This value can be tweaked to reduce the number of
+labeled. Defaults to 0. This value can be tweaked to reduce the number of
 node labels, to prevent the network from being too crowded.}
 
 \item{label_size}{Size of node labels, defaults to 4.}
@@ -59,6 +60,10 @@ node labels, to prevent the network from being too crowded.}
 
 \item{label_padding}{Padding around the label, defaults to 0.25 lines.}
 
+\item{min_seg_length}{Minimum length of lines to be drawn from labels to
+points. The default specified here is 0.25, half of the normal default
+value.}
+
 \item{seed}{Number used in call to \code{set.seed()} to allow for reproducible
 network generation}
 }
@@ -66,16 +71,16 @@ network generation}
 An object of class "gg"
 }
 \description{
-Plot an undirected network using ggraph
+Plot an undirected PPI network using ggraph
 }
 \details{
 Any layout supported by ggraph can be specified here - see
-\code{?layout_tbl_graph_igraph}for a list of options. Additionally, there is
+\code{?layout_tbl_graph_igraph} for a list of options. Additionally, there is
 support for the "force_atlas" method, implemented via the ForceAtlas2
 package
 }
 \references{
-See \url{https://github.com/analyxcompany/ForceAtlas2} for detals on
+See \url{https://github.com/analyxcompany/ForceAtlas2} for details on
 this method.
 }
 \seealso{
