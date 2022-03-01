@@ -37,7 +37,7 @@ innatedb_mapped <- innatedb_trimmed %>%
   rename("hgnc_symbol_B" = hgnc_symbol) %>%
   relocate(ends_with("A"))
 
-innatedb <- innatedb_mapped %>%
+innatedb_imex <- innatedb_mapped %>%
   group_by(ensembl_gene_A) %>%
   filter(n() < 1000) %>%
   ungroup() %>%
@@ -45,7 +45,7 @@ innatedb <- innatedb_mapped %>%
   filter(n() < 1000) %>%
   ungroup()
 
-innatedb %>% count(hgnc_symbol_A) %>% arrange(desc(n))
-innatedb %>% count(hgnc_symbol_B) %>% arrange(desc(n))
+innatedb_imex %>% count(hgnc_symbol_A) %>% arrange(desc(n))
+innatedb_imex %>% count(hgnc_symbol_B) %>% arrange(desc(n))
 
-usethis::use_data(innatedb, overwrite = TRUE)
+usethis::use_data(innatedb_imex, overwrite = TRUE)
