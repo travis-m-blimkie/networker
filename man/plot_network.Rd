@@ -15,7 +15,7 @@ plot_network(
   label = FALSE,
   label_column,
   label_filter = 0,
-  label_size = 4,
+  label_size = 5,
   label_colour = "black",
   label_face = "bold",
   label_padding = 0.25,
