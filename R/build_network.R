@@ -67,7 +67,8 @@ build_network <- function(df, col, order, ppi_data = innatedb_exp, seed = 1) {
     dplyr::select(-comp)
 
 
-  # Perform node filtering/trimming for minimum order networks
+  # Perform node filtering/trimming for minimum order networks, and recalculate
+  # the network statistics
   if (order == "min_simple") {
 
     message("Performing 'simple' minimum network trimming...")
