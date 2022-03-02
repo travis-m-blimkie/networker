@@ -4,7 +4,7 @@
 \alias{build_network}
 \title{Construct a PPI network from input genes and InnateDB's database}
 \usage{
-build_network(df, col, order, ppi_data = innatedb, seed = 1)
+build_network(df, col, order, ppi_data = innatedb_exp, seed = 1)
 }
 \arguments{
 \item{df}{Input data frame containing genes of interest}
