@@ -1,8 +1,8 @@
-#' Human IMEX PPI data downloaded from InnateDB
+#' Human experimentally verified PPI data downloaded from InnateDB
 #'
 #' A data frame containing human PPI data from InnateDB, from the entry
-#' "InnateDB Curated IMEx compliant Interactions via EBI (updated weekly)" at
-#' <http://www.innatedb.com/redirect.do?go=downloadCurated>
+#' "All Experimentally Validated Interactions (updated weekly)" at
+#' <https://innatedb.com/redirect.do?go=downloadImported>
 #'
 #' @format A data frame with 323626 rows and 4 columns:
 #' \describe{
@@ -15,14 +15,14 @@
 #'   \item{hgnc_symbol_B}{HGNC symbol for the second gene/protein in the
 #'     interaction}
 #' }
-"innatedb_imex"
+"innatedb_exp"
 
 
 #' Human PPI data downloaded from InnateDB
 #'
 #' A data frame containing human PPI data from InnateDB, from the entry
 #' "InnateDB Curated Protein-Protein Interactions (updated weekly)" at
-#' <http://www.innatedb.com/redirect.do?go=downloadCurated>
+#' <http://innatedb.com/redirect.do?go=downloadCurated>
 #'
 #' @format A data frame with 323626 rows and 4 columns:
 #' \describe{

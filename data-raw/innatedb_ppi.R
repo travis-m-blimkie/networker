@@ -19,8 +19,7 @@ innatedb_trimmed <- innatedb_filtered %>%
     "ensembl_gene_A" = alt_identifier_A,
     "ensembl_gene_B" = alt_identifier_B
   ) %>%
-  mutate(across(everything(), str_remove, pattern = "ensembl\\:")) %>%
-  distinct(ensembl_gene_A, ensembl_gene_B)
+  mutate(across(everything(), str_remove, pattern = "ensembl\\:"))
 
 
 # Get gene mapping from biomaRt
