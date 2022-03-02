@@ -25,8 +25,9 @@ innatedb_trimmed <- innatedb_filtered %>%
 
 
 # Remove interactions that are the same, but reversed between the two columns
-innatedb_no_dups <-
-  innatedb_trimmed[!duplicated(data.frame(t(apply(innatedb_trimmed, 1, sort)))), ]
+innatedb_no_dups <- innatedb_trimmed[
+  !duplicated(data.frame(t(apply(innatedb_trimmed, 1, sort)))),
+]
 
 
 # Get gene mapping from biomaRt
