@@ -24,7 +24,7 @@
 #'
 #' @seealso <https://www.github.com/travis-m-blimkie/networker>
 #'
-build_network <- function(df, col, order, ppi_data = innatedb_imex, seed = 1) {
+build_network <- function(df, col, order, ppi_data = innatedb_exp, seed = 1) {
 
   gene_vector <- df[[col]]
 
