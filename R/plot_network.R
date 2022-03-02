@@ -5,6 +5,7 @@
 #'   scale set up is green-white-red, designed to map to fold change values
 #' @param layout Layout of nodes in the network. Supports all layouts from
 #'   `ggraph`/`igraph`, as well as "force_atlas" (see Details)
+#' @param legend Should a legend be included? Defaults to FALSE
 #' @param edge_colour Edge colour, defaults to "grey50"
 #' @param edge_alpha Transparency of edges, defaults to 0.2
 #' @param node_size Numeric vector of length two, specifying size range of nodes
@@ -25,9 +26,8 @@
 #' @param min_seg_length Minimum length of lines to be drawn from labels to
 #'   points. The default specified here is 0.25, half of the normal default
 #'   value.
-#'
 #' @param seed Number used in call to `set.seed()` to allow for reproducible
-#'   network generation
+#'   network generation. Can be changed to get slightly different layouts.
 #'
 #' @return An object of class "gg"
 #' @export
@@ -49,6 +49,7 @@ plot_network <- function(
   network,
   fill_column,
   layout         = "kk",
+  legend         = FALSE,
   edge_colour    = "grey50",
   edge_alpha     = 0.2,
   node_size      = c(3, 9),
@@ -94,7 +95,7 @@ plot_network <- function(
         mid      = "white",
         high     = "firebrick",
         na.value = int_colour,
-        guide    = "none"
+        guide    = ifelse(legend, "colourbar", "none")
       ) +
       geom_node_text(
         aes(label = node_label),
@@ -107,7 +108,11 @@ plot_network <- function(
         min.segment.length = min_seg_length
       ) +
       scale_size_continuous(range = node_size, guide = "none") +
-      theme(plot.margin = unit(rep(0.05, 4), "cm"))
+      theme(
+        plot.margin = unit(rep(0.05, 4), "cm"),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14)
+      )
   } else {
     ggraph(network, layout = layout_object) +
       geom_edge_link(show.legend = FALSE, alpha = edge_alpha, colour = edge_colour) +
@@ -117,9 +122,13 @@ plot_network <- function(
         mid      = "white",
         high     = "firebrick",
         na.value = int_colour,
-        guide    = "none"
+        guide    = ifelse(legend, "colourbar", "none")
       ) +
       scale_size_continuous(range = node_size, guide = "none") +
-      theme(plot.margin = unit(rep(0.05, 4), "cm"))
+      theme(
+        plot.margin = unit(rep(0.05, 4), "cm"),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14)
+      )
   }
 }

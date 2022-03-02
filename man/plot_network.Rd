@@ -8,6 +8,7 @@ plot_network(
   network,
   fill_column,
   layout = "kk",
+  legend = FALSE,
   edge_colour = "grey50",
   edge_alpha = 0.2,
   node_size = c(3, 9),
@@ -31,6 +32,8 @@ scale set up is green-white-red, designed to map to fold change values}
 
 \item{layout}{Layout of nodes in the network. Supports all layouts from
 \code{ggraph}/\code{igraph}, as well as "force_atlas" (see Details)}
+
+\item{legend}{Should a legend be included? Defaults to FALSE}
 
 \item{edge_colour}{Edge colour, defaults to "grey50"}
 
@@ -65,7 +68,7 @@ points. The default specified here is 0.25, half of the normal default
 value.}
 
 \item{seed}{Number used in call to \code{set.seed()} to allow for reproducible
-network generation}
+network generation. Can be changed to get slightly different layouts.}
 }
 \value{
 An object of class "gg"
