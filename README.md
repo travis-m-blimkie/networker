@@ -51,24 +51,24 @@ BiocManager::install("biomaRt")
 # $ padj            <dbl> 3.143249e-03, 7.049566e-07, 3.556729e-04, 3.223212e-…
 
 > ex_network <- build_network(
-  df       = ex_genes,
-  col      = "ensembl_gene_id",
-  order    = "min_steiner",
-  ppi_data = innatedb_exp
-)
+    df       = ex_genes,
+    col      = "ensembl_gene_id",
+    order    = "min_steiner",
+    ppi_data = innatedb_exp
+  )
 # Finding interactions...
 # Creating network...
 # Performing 'Steiner' minimum network trimming...
 # Done.
 
-plot_network(
-  network      = ex_net,
-  fill_column  = log2FoldChange,
-  layout       = "force_atlas",
-  label        = TRUE,
-  label_column = hgnc_symbol,
-  label_filter = 1
-)
+> plot_network(
+    network      = ex_net,
+    fill_column  = log2FoldChange,
+    layout       = "force_atlas",
+    label        = TRUE,
+    label_column = hgnc_symbol,
+    label_filter = 1
+  )
 # Calculating Force Atlas node positions...
 # Warning message:
 # Removed 364 rows containing missing values (geom_text_repel).
