@@ -107,6 +107,20 @@ build_network <- function(df, col, order, ppi_data = innatedb_exp, seed = 1) {
     network_out <- network_init
   }
 
+  if (nrow(as_tibble(network_out)) > 2000) {
+    message(
+      "\nWarning:\nYour network contains more than 2000 nodes, and will likely ",
+      "be difficult to interpret when plotted.",
+      appendLF = FALSE
+    )
+
+    if (order != "zero") {
+      message(
+        " Consider using a zero order network to reduce the number of nodes.\n"
+      )
+    }
+  }
+
   message("Done.")
   network_out %>% left_join(df, by = c("name" = col))
 }
