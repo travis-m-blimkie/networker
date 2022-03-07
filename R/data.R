@@ -19,3 +19,17 @@
 #'     interaction}
 #' }
 "innatedb_exp"
+
+
+#' Human gene ID mappings from biomaRt
+#'
+#' A table containing gene ID mapping information for Ensembl, Entrez, and
+#' HGNC gene identifiers.
+#'
+#' @format A data frame with 68005 rows and 3 columns"
+#' \describe{
+#'   \item{ensembl_gene_id}{Ensembl gene IDs}
+#'   \item{hgnc_symbol}{HGNC symbols}
+#'   \item{entrez_gene_id}{Entrez (NCBI) gene IDs}
+#' }
+"biomart_id_mapping_human"
