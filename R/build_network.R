@@ -16,7 +16,7 @@
 #' @import dplyr
 #' @import tidygraph
 #'
-#' @details The "min_steinder" method is implemented with the `SteinerNet`
+#' @details The "min_steiner" method is implemented with the `SteinerNet`
 #'   package.
 #'
 #' @references See <https://cran.r-project.org/web/packages/SteinerNet/index.html>
@@ -56,15 +56,15 @@ build_network <- function(df, col, order, ppi_data = innatedb_exp, seed = 1) {
 
   message("Creating network...")
   network_init <- edge_table %>%
-    tidygraph::as_tbl_graph(directed = FALSE) %>%
+    as_tbl_graph(directed = FALSE) %>%
     remove_subnetworks() %>%
-    tidygraph::as_tbl_graph() %>%
+    as_tbl_graph() %>%
     mutate(
       degree      = centrality_degree(),
       betweenness = centrality_betweenness(),
       seed        = (name %in% gene_vector)
     ) %>%
-    dplyr::select(-comp)
+    select(-comp)
 
 
   # Perform node filtering/trimming for minimum order networks, and recalculate
@@ -98,7 +98,7 @@ build_network <- function(df, col, order, ppi_data = innatedb_exp, seed = 1) {
       color     = FALSE
     ) %>%
       magrittr::extract2(1) %>%
-      as_tbl_graph() %>%
+      as_tbl_graph(directed = FALSE) %>%
       mutate(
         degree      = centrality_degree(),
         betweenness = centrality_betweenness(),
@@ -122,5 +122,5 @@ build_network <- function(df, col, order, ppi_data = innatedb_exp, seed = 1) {
   }
 
   message("Done.")
-  network_out %>% left_join(df, by = c("name" = col))
+  network_out %>% left_join(., df, by = c("name" = col))
 }
