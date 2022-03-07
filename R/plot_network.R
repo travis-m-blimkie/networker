@@ -79,6 +79,22 @@ plot_network <- function(
 
   set_graph_style(foreground = "white")
 
+  if (is.numeric(pull(network, {{fill_column}}))) {
+    network_fill_geom <- scale_fill_gradient2(
+      low      = "springgreen4",
+      mid      = "white",
+      high     = "firebrick",
+      na.value = int_colour,
+      guide    = ifelse(legend, "colourbar", "none")
+    )
+  } else if (is.character(pull(network, {{fill_column}}))) {
+    network_fill_geom <- scale_fill_brewer(
+      palette  = "Set1",
+      na.value = int_colour,
+      guide    = ifelse(legend, "legend", "none")
+    )
+  }
+
   if (label) {
 
     network <- network %>%
@@ -90,13 +106,7 @@ plot_network <- function(
     ggraph(network, layout = layout_object) +
       geom_edge_link(show.legend = FALSE, alpha = edge_alpha, colour = edge_colour) +
       geom_node_point(aes(size = degree, fill = {{fill_column}}), pch = 21) +
-      scale_fill_gradient2(
-        low      = "springgreen4",
-        mid      = "white",
-        high     = "firebrick",
-        na.value = int_colour,
-        guide    = ifelse(legend, "colourbar", "none")
-      ) +
+      network_fill_geom +
       geom_node_text(
         aes(label = node_label),
         size          = label_size,
@@ -109,25 +119,19 @@ plot_network <- function(
       ) +
       scale_size_continuous(range = node_size, guide = "none") +
       theme(
-        plot.margin = unit(rep(0.05, 4), "cm"),
-        legend.text = element_text(size = 12),
+        plot.margin  = unit(rep(0.05, 4), "cm"),
+        legend.text  = element_text(size = 12),
         legend.title = element_text(size = 14)
       )
   } else {
     ggraph(network, layout = layout_object) +
       geom_edge_link(show.legend = FALSE, alpha = edge_alpha, colour = edge_colour) +
       geom_node_point(aes(size = degree, fill = {{fill_column}}), pch = 21) +
-      scale_fill_gradient2(
-        low      = "springgreen4",
-        mid      = "white",
-        high     = "firebrick",
-        na.value = int_colour,
-        guide    = ifelse(legend, "colourbar", "none")
-      ) +
+      network_fill_geom +
       scale_size_continuous(range = node_size, guide = "none") +
       theme(
-        plot.margin = unit(rep(0.05, 4), "cm"),
-        legend.text = element_text(size = 12),
+        plot.margin  = unit(rep(0.05, 4), "cm"),
+        legend.text  = element_text(size = 12),
         legend.title = element_text(size = 14)
       )
   }

@@ -1,6 +1,6 @@
 Package: networker
 Title: Reproducible PPI Network Creation and Visualization in R
-Version: 0.0.47
+Version: 0.0.48
 Authors@R:
     person("Travis", "Blimkie", , "travis.m.blimkie@gmail.com", role = c("aut", "cre"))
 Description: A suite of functions to make it simple to construct PPI networks
@@ -11,15 +11,21 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Imports: 
     biomaRt,
+    clusterProfiler,
     dplyr,
     ForceAtlas2,
     ggraph,
     igraph,
+    janitor,
     magrittr,
+    purrr,
+    ReactomePA,
     readr,
     SteinerNet,
     stringr,
-    tidygraph
+    tibble,
+    tidygraph,
+    tidyr
 Depends: 
     R (>= 2.10)
 LazyData: true
