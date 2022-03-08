@@ -18,14 +18,11 @@
 #' @seealso <https://github.com/travis-m-blimkie/networker>
 #'
 enrich_network <- function(network, filter = 0.05, background = NULL) {
-  node_table <- as_tibble(network)
 
-  input_entrez <- clusterProfiler::bitr(
-    geneID   = node_table[["name"]],
-    fromType = "ENSEMBL",
-    toType   = "ENTREZID",
-    OrgDb    = "org.Hs.eg.db"
-  ) %>% pull(ENTREZID)
+  input_entrez <- as_tibble(network) %>%
+    dplyr::select(name) %>%
+    left_join(biomart_id_mapping_human, by = c("name" = "ensembl_gene_id")) %>%
+    pull(entrez_gene_id)
 
   ReactomePA::enrichPathway(
     gene     = na.omit(input_entrez),
