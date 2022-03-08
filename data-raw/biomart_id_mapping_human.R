@@ -16,6 +16,7 @@ biomart_table_human_2 <- biomart_table_human_1 %>% replace(. == "", NA)
 biomart_id_mapping_human <- biomart_table_human_2 %>%
   rename("entrez_gene_id" = entrezgene_id) %>%
   arrange(ensembl_gene_id, hgnc_symbol, entrez_gene_id) %>%
-  distinct(ensembl_gene_id, .keep_all = TRUE)
+  distinct(ensembl_gene_id, .keep_all = TRUE) %>%
+  as_tibble()
 
 usethis::use_data(biomart_id_mapping_human, overwrite = TRUE)

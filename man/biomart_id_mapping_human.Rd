@@ -16,7 +16,7 @@ A data frame with 68005 rows and 3 columns"
 biomart_id_mapping_human
 }
 \description{
-A table containing gene ID mapping information for Ensembl, Entrez, and
+A tibble containing gene ID mapping information for Ensembl, Entrez, and
 HGNC gene identifiers.
 }
 \keyword{datasets}
