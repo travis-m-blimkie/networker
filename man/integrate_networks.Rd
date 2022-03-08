@@ -4,7 +4,7 @@
 \alias{integrate_networks}
 \title{Combine two (or more?) gene lists into a single integrated network}
 \usage{
-integrate_networks(df_a, df_b, order, ppi_data = innatedb_exp, seed = 1)
+integrate_networks(df_a, df_b, col, order, ppi_data = innatedb_exp, seed = 1)
 }
 \arguments{
 \item{df_a}{First data frame of input genes, with the first column containing
@@ -12,6 +12,9 @@ Ensembl gene IDs.}
 
 \item{df_b}{Second data frame. The name and contents of its first column
 should be the same as \code{df_a}}
+
+\item{col}{Column containing Ensembl gene IDs; must be present in both \code{df_a}
+and \code{df_b}}
 
 \item{order}{Desired type of output network ("zero", "first", "min_simple" or
 "min_steiner"); passed to \code{build_network()}}
