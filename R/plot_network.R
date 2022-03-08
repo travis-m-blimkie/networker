@@ -105,7 +105,7 @@ plot_network <- function(
 
     ggraph(network, layout = layout_object) +
       geom_edge_link(show.legend = FALSE, alpha = edge_alpha, colour = edge_colour) +
-      geom_node_point(aes(size = degree, fill = {{fill_column}}), pch = 21) +
+      geom_node_point(aes(size = degree, fill = {{fill_column}}), pch = 21, colour = "grey70") +
       network_fill_geom +
       geom_node_text(
         aes(label = node_label),
