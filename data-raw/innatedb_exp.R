@@ -1,10 +1,10 @@
 
 # Load packages
-library(tidyverse)
+library(dplyr)
 
 
 # Load and filter InnateDB data
-innatedb_init <- read_tsv(
+innatedb_init <- readr::read_tsv(
   file = "https://innatedb.com/download/interactions/all.mitab.gz",
   col_types = cols()
 )
@@ -16,7 +16,7 @@ innatedb_filtered <- innatedb_init %>%
   )
 
 innatedb_trimmed <- innatedb_filtered %>%
-  dplyr::select(
+  select(
     "ensembl_gene_A" = alt_identifier_A,
     "ensembl_gene_B" = alt_identifier_B
   ) %>%
