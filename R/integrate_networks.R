@@ -39,7 +39,7 @@ integrate_networks <- function(df_a, df_b, col, order, ppi_data = innatedb_exp, 
   )
 
   # Build a network for df_a and df_b
-  message("Build individual networks...")
+  message("==> Build individual networks...")
   individual_networks <- input_dfs_clean %>% purrr::map(
     ~build_network(
       df = .x,
@@ -51,7 +51,7 @@ integrate_networks <- function(df_a, df_b, col, order, ppi_data = innatedb_exp, 
   )
 
   # Build the combined/integrated network
-  message("\nBuild combined network...")
+  message("\n==> Build combined network...")
   combined_seed_nodes <-
     full_join(input_dfs_clean[[1]], input_dfs_clean[[2]], by = "name") %>%
     tidyr::unite(contains("source"), col = "source_network", na.rm = TRUE)
@@ -65,7 +65,7 @@ integrate_networks <- function(df_a, df_b, col, order, ppi_data = innatedb_exp, 
   )
 
   # Identify novel nodes present only in the combined network
-  message("\nIdentify novel nodes...")
+  message("\n==> Identify novel nodes...")
   individual_network_nodes <- individual_networks %>%
     purrr::map(~as_tibble(.x)) %>%
     bind_rows(., .id = "source_network") %>%
@@ -77,10 +77,17 @@ integrate_networks <- function(df_a, df_b, col, order, ppi_data = innatedb_exp, 
   novel_nodes <- setdiff(combined_network_nodes, individual_network_nodes)
 
   combined_network_meta <- combined_network %>%
-    mutate(novel_node = case_when(
-      name %in% novel_nodes ~ TRUE,
-      TRUE ~ FALSE
-    ))
+    mutate(
+      novel_node = case_when(
+        (name %in% novel_nodes & !seed) ~ TRUE,
+        TRUE ~ FALSE
+      ),
+      source_novel = case_when(
+        novel_node ~ "novel_node",
+        (!novel_node & !is.na(source_network)) ~ source_network,
+        TRUE ~ NA_character_
+      )
+    )
 
 
   # Return all three network objects
