@@ -9,6 +9,6 @@
       ),
       width = getOption("width")
     ),
-    "\nhttps://github.com/travis-m-blimkie/networker/issues"
+    "\nhttps://github.com/travis-m-blimkie/networker/issues\n"
   )
 }
