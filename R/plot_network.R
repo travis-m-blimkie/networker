@@ -6,6 +6,8 @@
 #' @param layout Layout of nodes in the network. Supports all layouts from
 #'   `ggraph`/`igraph`, as well as "force_atlas" (see Details)
 #' @param legend Should a legend be included? Defaults to FALSE
+#' @param fontfamily Font to use for labels and legend (if present). Defaults to
+#'   "Helvetica".
 #' @param edge_colour Edge colour, defaults to "grey50"
 #' @param edge_alpha Transparency of edges, defaults to 0.2
 #' @param node_size Numeric vector of length two, specifying size range of nodes
@@ -50,6 +52,7 @@ plot_network <- function(
   fill_column,
   layout         = "kk",
   legend         = FALSE,
+  fontfamily     = "Helvetica",
   edge_colour    = "grey50",
   edge_alpha     = 0.2,
   node_size      = c(3, 9),
@@ -92,7 +95,8 @@ plot_network <- function(
       palette  = "Set1",
       na.value = int_colour,
       guide    = ifelse(legend, "legend", "none")
-    )
+    ) +
+      guides(fill = guide_legend(override.aes = list(size = 5)))
   }
 
   if (label) {
@@ -111,6 +115,7 @@ plot_network <- function(
         aes(label = node_label),
         size          = label_size,
         repel         = TRUE,
+        family        = fontfamily,
         colour        = label_colour,
         fontface      = label_face,
         check_overlap = TRUE,
@@ -119,6 +124,7 @@ plot_network <- function(
       ) +
       scale_size_continuous(range = node_size, guide = "none") +
       theme(
+        text         = element_text(family = fontfamily),
         plot.margin  = unit(rep(0.05, 4), "cm"),
         legend.text  = element_text(size = 12),
         legend.title = element_text(size = 14)
@@ -130,6 +136,7 @@ plot_network <- function(
       network_fill_geom +
       scale_size_continuous(range = node_size, guide = "none") +
       theme(
+        text         = element_text(family = fontfamily),
         plot.margin  = unit(rep(0.05, 4), "cm"),
         legend.text  = element_text(size = 12),
         legend.title = element_text(size = 14)

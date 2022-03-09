@@ -9,6 +9,7 @@ plot_network(
   fill_column,
   layout = "kk",
   legend = FALSE,
+  fontfamily = "Helvetica",
   edge_colour = "grey50",
   edge_alpha = 0.2,
   node_size = c(3, 9),
@@ -34,6 +35,9 @@ scale set up is green-white-red, designed to map to fold change values}
 \code{ggraph}/\code{igraph}, as well as "force_atlas" (see Details)}
 
 \item{legend}{Should a legend be included? Defaults to FALSE}
+
+\item{fontfamily}{Font to use for labels and legend (if present). Defaults to
+"Helvetica".}
 
 \item{edge_colour}{Edge colour, defaults to "grey50"}
 
