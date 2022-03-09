@@ -15,7 +15,7 @@ remove_subnetworks <- function(input) {
 
   max_subnet_id <- igraph::V(input)$comp %>%
     table() %>%
-    enframe() %>%
+    tibble::enframe() %>%
     arrange(desc(value)) %>%
     magrittr::extract2(1, 1) %>%
     as.numeric()
