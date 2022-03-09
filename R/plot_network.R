@@ -95,8 +95,7 @@ plot_network <- function(
       palette  = "Set1",
       na.value = int_colour,
       guide    = ifelse(legend, "legend", "none")
-    ) +
-      guides(fill = guide_legend(override.aes = list(size = 5)))
+    )
   }
 
   if (label) {
