@@ -15,7 +15,6 @@
 #'
 #' @import dplyr
 #' @import tidygraph
-#' @importFrom igraph as.igraph hub.score
 #'
 #' @details The "min_steiner" method is implemented with the `SteinerNet`
 #'   package.
@@ -81,6 +80,7 @@ build_network <- function(df, col, order, ppi_data = innatedb_exp, seed = 1) {
       mutate(
         degree      = centrality_degree(),
         betweenness = centrality_betweenness(),
+        hub_score   = centrality_hub()
       )
   } else if (order == "min_steiner") {
 
@@ -103,6 +103,7 @@ build_network <- function(df, col, order, ppi_data = innatedb_exp, seed = 1) {
       mutate(
         degree      = centrality_degree(),
         betweenness = centrality_betweenness(),
+        hub_score   = centrality_hub()
       )
   } else {
     network_out <- network_init
@@ -123,11 +124,5 @@ build_network <- function(df, col, order, ppi_data = innatedb_exp, seed = 1) {
 
   message("Done.")
 
-  network_hubscores <- igraph::hub.score(as.igraph(network_out)) %>%
-    purrr::pluck("vector") %>%
-    tibble::enframe("name", "hub_score")
-
-  network_out %>%
-    left_join(., network_hubscores, by = "name") %>%
-    left_join(., df, by = c("name" = col))
+  network_out %>% left_join(., df, by = c("name" = col))
 }
