@@ -19,6 +19,7 @@ plot_network(
   label_filter = 0,
   label_size = 5,
   label_colour = "black",
+  hub_colour = "blue2",
   label_face = "bold",
   label_padding = 0.25,
   min_seg_length = 0.25,
@@ -62,6 +63,9 @@ node labels, to prevent the network from being too crowded.}
 \item{label_size}{Size of node labels, defaults to 4.}
 
 \item{label_colour}{Colour of node labels, defaults to "black"}
+
+\item{hub_colour}{Colour of node labels for hubs. The top 2\% of nodes (based
+on calculated hub score) are highlighted with this colour, if \code{label = TRUE}.}
 
 \item{label_face}{Font face for node labels, defaults to "bold"}
 
