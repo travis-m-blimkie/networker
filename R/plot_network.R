@@ -68,6 +68,11 @@ plot_network <- function(
   seed           = 1
 ) {
 
+  # Set a plain white background
+  set_graph_style(foreground = "white")
+
+  # If we're using the Force Atlas layout, we need to pre-calculate the node
+  # positions using the specific package/function
   if (layout == "force_atlas") {
     message("Calculating Force Atlas node positions...")
     set.seed(seed)
@@ -80,8 +85,8 @@ plot_network <- function(
     layout_object <- layout
   }
 
-  set_graph_style(foreground = "white")
-
+  # Set up the fill mapping, based on whether we're given a numeric (e.g. fold
+  # change) or categorical (e.g. source from integrated network)
   if (is.numeric(pull(network, {{fill_column}}))) {
     network_fill_geom <- scale_fill_gradient2(
       low      = "springgreen4",
@@ -98,13 +103,14 @@ plot_network <- function(
     )
   }
 
+  # Get fill_column as a string, so we can clean it up if the legend is included
   legend_name <- match.call()$fill_column
 
   if (label) {
 
     network <- network %>%
       mutate(node_label = case_when(
-        seed & (degree > label_filter) ~ {{label_column}},
+        degree > label_filter ~ {{label_column}},
         TRUE ~ NA_character_
       ))
 
