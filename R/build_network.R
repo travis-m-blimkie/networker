@@ -124,5 +124,11 @@ build_network <- function(df, col, order, ppi_data = innatedb_exp, seed = 1) {
 
   message("Done.")
 
-  network_out %>% left_join(., df, by = c("name" = col))
+  ensembl_to_hgnc <- biomart_id_mapping_human %>%
+    select("name" = ensembl_gene_id, "gene_name" = hgnc_symbol)
+
+  network_out %>%
+    select(-color) %>%
+    left_join(., ensembl_to_hgnc, by = "name") %>%
+    left_join(., df, by = c("name" = col))
 }
