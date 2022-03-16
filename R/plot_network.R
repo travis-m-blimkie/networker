@@ -98,6 +98,8 @@ plot_network <- function(
     )
   }
 
+  legend_name <- match.call()$fill_column
+
   if (label) {
 
     network <- network %>%
@@ -122,6 +124,10 @@ plot_network <- function(
         min.segment.length = min_seg_length
       ) +
       scale_size_continuous(range = node_size, guide = "none") +
+      labs(fill = stringr::str_wrap(
+        janitor::make_clean_names(legend_name, "title"),
+        7
+      )) +
       theme(
         text         = element_text(family = fontfamily),
         plot.margin  = unit(rep(0.05, 4), "cm"),
@@ -134,6 +140,10 @@ plot_network <- function(
       geom_node_point(aes(size = degree, fill = {{fill_column}}), pch = 21) +
       network_fill_geom +
       scale_size_continuous(range = node_size, guide = "none") +
+      labs(fill = stringr::str_wrap(
+        janitor::make_clean_names(legend_name, "title"),
+        7
+      )) +
       theme(
         text         = element_text(family = fontfamily),
         plot.margin  = unit(rep(0.05, 4), "cm"),
