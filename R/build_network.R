@@ -62,7 +62,8 @@ build_network <- function(df, col, order, ppi_data = innatedb_exp, seed = 1) {
     mutate(
       degree      = centrality_degree(),
       betweenness = centrality_betweenness(),
-      seed        = (name %in% gene_vector)
+      seed        = (name %in% gene_vector),
+      hub_score   = centrality_hub()
     ) %>%
     select(-comp)
 
