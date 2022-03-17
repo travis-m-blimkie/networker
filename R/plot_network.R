@@ -21,7 +21,7 @@
 #' @param label_filter Degree filter used to determine if a given node should be
 #'   labeled. Defaults to 0. This value can be tweaked to reduce the number of
 #'   node labels, to prevent the network from being too crowded.
-#' @param label_size Size of node labels, defaults to 4.
+#' @param label_size Size of node labels, defaults to 5.
 #' @param label_colour Colour of node labels, defaults to "black"
 #' @param hub_colour Colour of node labels for hubs. The top 2% of nodes (based
 #'   on calculated hub score) are highlighted with this colour, if `label =

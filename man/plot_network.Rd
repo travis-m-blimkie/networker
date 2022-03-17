@@ -60,7 +60,7 @@ labeling nodes.}
 labeled. Defaults to 0. This value can be tweaked to reduce the number of
 node labels, to prevent the network from being too crowded.}
 
-\item{label_size}{Size of node labels, defaults to 4.}
+\item{label_size}{Size of node labels, defaults to 5.}
 
 \item{label_colour}{Colour of node labels, defaults to "black"}
 
