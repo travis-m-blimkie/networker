@@ -92,7 +92,7 @@ plot_network <- function(
   # Set up the fill mapping, based on whether we're given a numeric (e.g. fold
   # change) or categorical (e.g. source from integrated network)
   if (is.numeric(pull(network, {{fill_column}}))) {
-    network_fill_geom <- scale_fill_gradient2(
+    network_fill_geom <- ggplot2::scale_fill_gradient2(
       low      = "springgreen4",
       mid      = "white",
       high     = "firebrick",
@@ -100,7 +100,7 @@ plot_network <- function(
       guide    = ifelse(legend, "colourbar", "none")
     )
   } else if (is.character(pull(network, {{fill_column}}))) {
-    network_fill_geom <- scale_fill_brewer(
+    network_fill_geom <- ggplot2::scale_fill_brewer(
       palette  = "Set1",
       na.value = int_colour,
       guide    = ifelse(legend, "legend", "none")
