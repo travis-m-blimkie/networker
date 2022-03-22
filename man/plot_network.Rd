@@ -23,14 +23,17 @@ plot_network(
   label_face = "bold",
   label_padding = 0.25,
   min_seg_length = 0.25,
-  seed = 1
+  seed = 1,
+  ...
 )
 }
 \arguments{
 \item{network}{\code{tidygraph} object, output from \code{build_network}}
 
-\item{fill_column}{Tidy-select column for mapping node colour. The colour
-scale set up is green-white-red, designed to map to fold change values}
+\item{fill_column}{Tidy-select column for mapping node colour. Designed to
+handle continuous numeric mappings (either positive/negative only, or
+both), and categorical mappings. Two-sided numeric columns will be mapped
+to green and red for negative and positive values, respectively.}
 
 \item{layout}{Layout of nodes in the network. Supports all layouts from
 \code{ggraph}/\code{igraph}, as well as "force_atlas" (see Details)}
@@ -77,6 +80,9 @@ value.}
 
 \item{seed}{Number used in call to \code{set.seed()} to allow for reproducible
 network generation. Can be changed to get slightly different layouts.}
+
+\item{...}{Further parameters to be passed on to \code{ggplot2::theme()}, e.g.
+\code{legend.position}}
 }
 \value{
 An object of class "gg"

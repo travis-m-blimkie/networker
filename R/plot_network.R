@@ -1,8 +1,10 @@
 #' Plot an undirected PPI network using ggraph
 #'
 #' @param network `tidygraph` object, output from `build_network`
-#' @param fill_column Tidy-select column for mapping node colour. The colour
-#'   scale set up is green-white-red, designed to map to fold change values
+#' @param fill_column Tidy-select column for mapping node colour. Designed to
+#'   handle continuous numeric mappings (either positive/negative only, or
+#'   both), and categorical mappings. Two-sided numeric columns will be mapped
+#'   to green and red for negative and positive values, respectively.
 #' @param layout Layout of nodes in the network. Supports all layouts from
 #'   `ggraph`/`igraph`, as well as "force_atlas" (see Details)
 #' @param legend Should a legend be included? Defaults to FALSE
@@ -33,10 +35,13 @@
 #'   value.
 #' @param seed Number used in call to `set.seed()` to allow for reproducible
 #'   network generation. Can be changed to get slightly different layouts.
+#' @param ... Further parameters to be passed on to `ggplot2::theme()`, e.g.
+#'   `legend.position`
 #'
 #' @return An object of class "gg"
 #' @export
 #'
+#' @import ggplot2
 #' @import ggraph
 #' @import dplyr
 #'
@@ -69,14 +74,18 @@ plot_network <- function(
   label_face     = "bold",
   label_padding  = 0.25,
   min_seg_length = 0.25,
-  seed           = 1
+  seed           = 1,
+  ...
 ) {
 
   # Set a plain white background
   set_graph_style(foreground = "white")
 
+  # Grab the column for fill mapping to make subsequent checks simpler
+  just_col_values <- pull(network, {{fill_column}})
+
   # If we're using the Force Atlas layout, we need to pre-calculate the node
-  # positions using the specific package/function
+  # positions using the appropriate function from the ForceAtlas2 package
   if (layout == "force_atlas") {
     message("Calculating Force Atlas node positions...")
     set.seed(seed)
@@ -90,17 +99,37 @@ plot_network <- function(
   }
 
   # Set up the fill mapping, based on whether we're given a numeric (e.g. fold
-  # change) or categorical (e.g. source from integrated network)
-  if (is.numeric(pull(network, {{fill_column}}))) {
-    network_fill_geom <- ggplot2::scale_fill_gradient2(
-      low      = "springgreen4",
-      mid      = "white",
-      high     = "firebrick",
-      na.value = int_colour,
-      guide    = ifelse(legend, "colourbar", "none")
-    )
-  } else if (is.character(pull(network, {{fill_column}}))) {
-    network_fill_geom <- ggplot2::scale_fill_brewer(
+  # change) or categorical (e.g. source from integrated network) column
+  if (is.numeric(just_col_values)) {
+
+    if (any(just_col_values < 0) & any(just_col_values > 0)) {
+      # Numeric column is two-sided (positive and negative)
+      network <- network %>%
+        mutate(
+          new_fill_col = case_when(
+            {{fill_column}} < 0 ~ "Down",
+            {{fill_column}} > 0 ~ "Up",
+            TRUE ~ NA_character_
+          )
+        )
+
+      network_fill_geom <- scale_fill_manual(
+        values   = c("Up" = "firebrick", "Down" = "springgreen4"),
+        na.value = int_colour
+      )
+
+    } else {
+      # Numeric column is one-sided
+      network <- mutate(network, new_fill_col = {{fill_column}})
+      network_fill_geom <- scale_fill_continuous()
+    }
+
+  } else if (is.character(just_col_values)) {
+
+    network <- network %>%
+      mutate(new_fill_col = {{fill_column}})
+
+    network_fill_geom <- scale_fill_brewer(
       palette  = "Set1",
       na.value = int_colour,
       guide    = ifelse(legend, "legend", "none")
@@ -131,7 +160,7 @@ plot_network <- function(
 
     ggraph(network, layout = layout_object) +
       geom_edge_link(show.legend = FALSE, alpha = edge_alpha, colour = edge_colour) +
-      geom_node_point(aes(size = degree, fill = {{fill_column}}), pch = 21, colour = "grey70") +
+      geom_node_point(aes(size = degree, fill = new_fill_col), pch = 21, colour = "grey70") +
       network_fill_geom +
       geom_node_text(
         aes(label = node_label, colour = is_hub),
@@ -146,31 +175,39 @@ plot_network <- function(
       ) +
       scale_size_continuous(range = node_size, guide = "none") +
       scale_colour_manual(values = c("y" = hub_colour, "n" = label_colour)) +
-      labs(fill = stringr::str_wrap(
-        janitor::make_clean_names(legend_name, "title"),
-        7
-      )) +
+      labs(
+        fill = NULL
+        # fill = stringr::str_wrap(
+        #   janitor::make_clean_names(legend_name, "title"),
+        #   7
+        # )
+      ) +
       theme(
+        ...,
         text         = element_text(family = fontfamily),
         plot.margin  = unit(rep(0.05, 4), "cm"),
         legend.text  = element_text(size = 12),
-        legend.title = element_text(size = 14)
+        # legend.title = element_text(size = 14)
       )
   } else {
     ggraph(network, layout = layout_object) +
       geom_edge_link(show.legend = FALSE, alpha = edge_alpha, colour = edge_colour) +
-      geom_node_point(aes(size = degree, fill = {{fill_column}}), pch = 21) +
+      geom_node_point(aes(size = degree, fill = new_fill_col), pch = 21) +
       network_fill_geom +
       scale_size_continuous(range = node_size, guide = "none") +
-      labs(fill = stringr::str_wrap(
-        janitor::make_clean_names(legend_name, "title"),
-        7
-      )) +
+      labs(
+        fill = NULL
+        # fill = stringr::str_wrap(
+        #   janitor::make_clean_names(legend_name, "title"),
+        #   7
+        # )
+      ) +
       theme(
+        ...,
         text         = element_text(family = fontfamily),
         plot.margin  = unit(rep(0.05, 4), "cm"),
         legend.text  = element_text(size = 12),
-        legend.title = element_text(size = 14)
+        # legend.title = element_text(size = 14)
       )
   }
 }
