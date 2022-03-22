@@ -26,7 +26,20 @@
 #'
 build_network <- function(df, col, order, ppi_data = innatedb_exp, seed = 1) {
 
-  gene_vector <- df[[col]]
+  # Check for and remove any duplicate IDs, which will cause problems later.
+  # Make sure to warn the user about this.
+  df_clean <- distinct(df, !!sym(col), .keep_all = TRUE)
+  gene_vector <- unique(df_clean[[col]])
+  lost_ids <- df[[col]][duplicated(df[[col]])]
+
+  if (length(gene_vector) < nrow(df)) {
+    message(paste0(
+      "==> INFO: Found ",
+      nrow(df) - length(gene_vector),
+      "duplicate IDs in the input column, which have been removed:"
+    ))
+    message(paste(lost_ids, collapse = ", "), "\n")
+  }
 
   if (!grepl(x = gene_vector[1], pattern = "^ENSG")) {
     stop("Input genes must be human Ensembl IDs")
@@ -128,7 +141,17 @@ build_network <- function(df, col, order, ppi_data = innatedb_exp, seed = 1) {
   ensembl_to_hgnc <- biomart_id_mapping_human %>%
     select("name" = ensembl_gene_id, "gene_name" = hgnc_symbol)
 
-  network_out %>%
-    left_join(., ensembl_to_hgnc, by = "name") %>%
-    left_join(., df, by = c("name" = col))
+  network_mapped <- left_join(
+    network_out,
+    ensembl_to_hgnc,
+    by = "name"
+  )
+
+  network_final <- left_join(
+    network_mapped,
+    df_clean,
+    by = c("name" = col)
+  )
+
+  return(network_final)
 }
