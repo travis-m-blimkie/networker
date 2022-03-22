@@ -186,9 +186,10 @@ plot_network <- function(
         ...,
         text         = element_text(family = fontfamily),
         plot.margin  = unit(rep(0.05, 4), "cm"),
-        legend.text  = element_text(size = 12),
+        legend.text  = element_text(size = 14),
         # legend.title = element_text(size = 14)
-      )
+      ) +
+      guides(fill = guide_legend(override.aes = list(size = 5)))
   } else {
     ggraph(network, layout = layout_object) +
       geom_edge_link(show.legend = FALSE, alpha = edge_alpha, colour = edge_colour) +
@@ -206,8 +207,9 @@ plot_network <- function(
         ...,
         text         = element_text(family = fontfamily),
         plot.margin  = unit(rep(0.05, 4), "cm"),
-        legend.text  = element_text(size = 12),
+        legend.text  = element_text(size = 14),
         # legend.title = element_text(size = 14)
-      )
+      ) +
+      guides(fill = guide_legend(override.aes = list(size = 5)))
   }
 }
