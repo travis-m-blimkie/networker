@@ -114,7 +114,7 @@ plot_network <- function(
         )
 
       network_fill_geom <- scale_fill_manual(
-        values   = c("Up" = "firebrick3", "Down" = "#23bd24ff"),
+        values   = c("Up" = "firebrick3", "Down" = "#188119"),
         na.value = int_colour
       )
 
