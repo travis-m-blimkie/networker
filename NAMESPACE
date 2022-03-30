@@ -2,6 +2,7 @@
 
 export(build_network)
 export(enrich_network)
+export(extract_subnetwork)
 export(integrate_networks)
 export(plot_network)
 import(dplyr)

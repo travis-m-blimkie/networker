@@ -33,5 +33,6 @@ enrich_network <- function(network, filter = 0.05, background = NULL) {
     tibble::remove_rownames() %>%
     janitor::clean_names() %>%
     as_tibble() %>%
-    filter(p_adjust < filter)
+    filter(p_adjust < filter) %>%
+    dplyr::select(id, description, "p_value" = pvalue, p_adjust, gene_id)
 }

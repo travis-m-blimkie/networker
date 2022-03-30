@@ -153,6 +153,8 @@ build_network <- function(df, col, order, ppi_data = innatedb_exp, seed = 1) {
     by = c("name" = col)
   )
 
+  attr(network_final, "order") <- order
+
   message("Done.\n")
   return(network_final)
 }
