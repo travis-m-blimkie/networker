@@ -48,7 +48,10 @@
 #' @details Any layout supported by ggraph can be specified here - see
 #'   `?layout_tbl_graph_igraph` for a list of options. Additionally, there is
 #'   support for the "force_atlas" method, implemented via the ForceAtlas2
-#'   package
+#'   package.
+#'
+#'   Node statistics (degree, betweenness, and hub score) and calculated using
+#'   the respective functions from the `tidygraph` package.
 #'
 #' @references See <https://github.com/analyxcompany/ForceAtlas2> for details on
 #'   this method.
