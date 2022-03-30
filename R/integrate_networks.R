@@ -51,9 +51,12 @@ integrate_networks <- function(df_list, col, order, ppi_data = innatedb_exp, see
     )
   )
 
-  # Build the combined/integrated network by first joining the inputs
+  # Build the combined/integrated network by first joining the inputs, making
+  # sure to remove duplicates before assiging the sources
   message("\n==> Build combined network...")
-  combined_seed_nodes <- bind_rows(input_dfs_clean) %>%
+  combined_seed_nodes <- input_dfs_clean %>%
+    map(~distinct(.x, name, .keep_all = TRUE)) %>%
+    bind_rows() %>%
     group_by(name) %>%
     summarise(source_network = paste(source, collapse = "_"))
 
@@ -90,9 +93,8 @@ integrate_networks <- function(df_list, col, order, ppi_data = innatedb_exp, see
       )
     )
 
-
-  # Return all three network objects
-  message("Done.")
+  # Return both network objects
+  message("Done.\n")
   return(
     list(
       "integrated_network"  = combined_network_meta,
