@@ -7,6 +7,7 @@
 plot_network(
   network,
   fill_column,
+  fill_type,
   layout = "kk",
   legend = FALSE,
   fontfamily = "Helvetica",
@@ -34,6 +35,10 @@ plot_network(
 handle continuous numeric mappings (either positive/negative only, or
 both), and categorical mappings. Two-sided numeric columns will be mapped
 to green and red for negative and positive values, respectively.}
+
+\item{fill_type}{Type of fill mapping to perform for nodes, based on supplied
+\code{fill_column}. Options are: "fold_change", "two_sided", "one_sided", or
+"categorical".}
 
 \item{layout}{Layout of nodes in the network. Supports all layouts from
 \code{ggraph}/\code{igraph}, as well as "force_atlas" (see Details)}
@@ -95,6 +100,13 @@ Any layout supported by ggraph can be specified here - see
 \code{?layout_tbl_graph_igraph} for a list of options. Additionally, there is
 support for the "force_atlas" method, implemented via the ForceAtlas2
 package.
+
+The \code{fill_type} argument will determine how the node colour is mapped to
+the desired column. "fold_change" represents a special case, where the fill
+column is numeric and whose values should be mapped to up (> 0) or down (<
+0). "two_sided" and "one_sided" are designed for numeric data that contains
+either positive and negative values, or only positive/negative values,
+respectively. "categorical" is designed for non-numeric mapping colour.
 
 Node statistics (degree, betweenness, and hub score) and calculated using
 the respective functions from the \code{tidygraph} package.
