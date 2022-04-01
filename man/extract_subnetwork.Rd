@@ -20,6 +20,16 @@ pulled from the input network.}
 \description{
 Extract a subnetwork based on pathway genes
 }
+\details{
+Uses functions from the igraph package to extract a minimally
+connected "module" from the starting network, using genes from a given
+pathway as the basis. To see what genes were pulled out for the pathway,
+use \code{attr(output, "starters")}.
+}
+\references{
+Code for network module (subnetwork) extraction was based off of
+that used in jboktor/NetworkAnalystR on Github.
+}
 \seealso{
 \url{https://www.github.com/travis-m-blimkie/networker}
 }
