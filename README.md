@@ -21,8 +21,8 @@ BiocManager::install("biomaRt", "ReactomePA")
 
 ## Example
 Start off by loading the package, reading in some genes, and building a network
-- here we'll use the "min_steiner" option, which works well for most small- to
-mid-sized networks. 
+using the "min_steiner" option, which works well for most small- to mid-sized
+networks.
 
 ```r
 > library(networker)
@@ -52,12 +52,9 @@ mid-sized networks.
 # Done.
 ```
 
-The output, which can be easily viewed as a table with `as_tibble()`, contains
-the column "gene_name" holding the HGNC symbols for all genes/nodes in the
-network. Notice that duplicate IDs are automatically removed from the input,
-with a message to the user. Now we can visualize the network with
-`plot_network`, using the aforementioned "gene_name" column to provide the
-labels:
+Notice that duplicate IDs are automatically removed from the input, with a
+message to the user. Now we can visualize the network with `plot_network`, using
+the automatically added "gene_name" column to provide the labels:
 
 ```r
 > plot_network(
@@ -78,7 +75,8 @@ labels:
 ![](man/figures/network_example.png)
 
 We can then use the `enrich_network` to test for significantly enriched Reactome
-pathways (implemented with [ReactomePA]()):
+pathways (implemented with
+[ReactomePA](https://bioconductor.org/packages/ReactomePA/)):
 
 ```r
 > (sig_pathways <- enrich_network(network = ex_net, filter = 0.05))
@@ -98,7 +96,7 @@ pathways (implemented with [ReactomePA]()):
 # # … with 201 more rows
 ```
 
-Finally, we can pick from one of the pathways above, and pull out a
+Finally, we can pick one of the pathways output above, and pull out a
 module/subnetwork based on the genes belonging to that pathway:
 
 ```r
