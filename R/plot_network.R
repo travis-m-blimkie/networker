@@ -161,10 +161,9 @@ plot_network <- function(
   legend_name <- match.call()$fill_column
 
   if (label) {
-
     hub_nodes <- as_tibble(network) %>%
       arrange(desc(hub_score)) %>%
-      slice_head(n = ceiling(nrow(as_tibble(network)) * 0.02)) %>%
+      slice_head(n = 2 + ceiling(nrow(as_tibble(network)) * 0.02)) %>%
       pull(name)
 
     network <- network %>%
