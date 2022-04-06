@@ -106,7 +106,7 @@ the desired column. "fold_change" represents a special case, where the fill
 column is numeric and whose values should be mapped to up (> 0) or down (<
 0). "two_sided" and "one_sided" are designed for numeric data that contains
 either positive and negative values, or only positive/negative values,
-respectively. "categorical" is designed for non-numeric mapping colour.
+respectively. "categorical" is designed for non-numeric colour mapping.
 
 Node statistics (degree, betweenness, and hub score) and calculated using
 the respective functions from the \code{tidygraph} package.
