@@ -97,7 +97,8 @@ pathways (implemented with
 ```
 
 Finally, we can pick one of the pathways output above, and pull out a
-module/subnetwork based on the genes belonging to that pathway:
+module/subnetwork based on the genes belonging to that pathway, which are 
+highlighted when plotting:
 
 ```r
 > ex_net_module <- extract_subnetwork(
@@ -114,7 +115,8 @@ module/subnetwork based on the genes belonging to that pathway:
     layout       = "kk",
     label        = TRUE,
     label_column = gene_name,
-    label_filter = 0
+    label_filter = 0,
+    subnet       = TRUE
   )
 ```
 
