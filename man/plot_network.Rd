@@ -24,6 +24,7 @@ plot_network(
   label_face = "bold",
   label_padding = 0.25,
   min_seg_length = 0.25,
+  subnet = TRUE,
   seed = 1,
   ...
 )
@@ -83,6 +84,10 @@ on calculated hub score) are highlighted with this colour, if \code{label = TRUE
 points. The default specified here is 0.25, half of the normal default
 value.}
 
+\item{subnet}{Logical determining if networks produced by
+\code{extract_subnetwork} should be treated as such, or just as a normal network
+from \code{build_network}.}
+
 \item{seed}{Number used in call to \code{set.seed()} to allow for reproducible
 network generation. Can be changed to get slightly different layouts.}
 
@@ -110,6 +115,13 @@ respectively. "categorical" is designed for non-numeric colour mapping.
 
 Node statistics (degree, betweenness, and hub score) and calculated using
 the respective functions from the \code{tidygraph} package.
+
+If plotting a network created from the \code{extract_subnetwork} function, the
+genes belonging to the extracted pathway (i.e. the contents of the
+"gene_id" column in the enrichment results) will be highlighted, instead of
+hub nodes. The colour used here can be controlled via the \code{hub_colour}
+argument, and this behaviour can be turned off altogether by setting the
+\code{subnet} argument to FALSE.
 }
 \references{
 See \url{https://github.com/analyxcompany/ForceAtlas2} for details on
