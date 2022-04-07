@@ -198,7 +198,7 @@ plot_network <- function(
       labs(fill = NULL) +
       theme(
         text         = element_text(family = fontfamily),
-        plot.margin  = unit(rep(0.05, 4), "cm"),
+        plot.margin  = unit(rep(0, 4), "cm"),
         legend.text  = element_text(size = 14),
         ...
       ) +
@@ -212,7 +212,7 @@ plot_network <- function(
       labs(fill = NULL) +
       theme(
         text         = element_text(family = fontfamily),
-        plot.margin  = unit(rep(0.05, 4), "cm"),
+        plot.margin  = unit(rep(0, 4), "cm"),
         legend.text  = element_text(size = 14),
         ...
       )
