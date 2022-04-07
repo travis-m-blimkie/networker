@@ -13,9 +13,9 @@
 #' @importFrom igraph as.igraph V induced_subgraph decompose.graph simplify delete.vertices get.shortest.paths
 #'
 #' @details Uses functions from the igraph package to extract a minimally
-#'   connected "module" from the starting network, using genes from a given
-#'   pathway as the basis. To see what genes were pulled out for the pathway,
-#'   use `attr(output, "starters")`.
+#'   connected subnetwork or module from the starting network, using genes from
+#'   a given pathway as the basis. To see what genes were pulled out for the
+#'   pathway, check `attr(x, "starters")`.
 #'
 #' @references Code for network module (subnetwork) extraction was based off of
 #' that used in jboktor/NetworkAnalystR on Github.
@@ -24,7 +24,22 @@
 #'
 extract_subnetwork <- function(network, enrich_result, pathway_name) {
 
-  stopifnot(pathway_name %in% enrich_result[["description"]])
+  message("Checking inputs...")
+  if ( !all(c("description", "gene_id") %in% colnames(enrich_result)) ) {
+    stop("Argument 'enrich_result' must contain the columns 'description' and ",
+         "'gene_id'")
+  }
+
+  if (!pathway_name %in% enrich_result[["description"]]) {
+    stop("Argument 'pathway_name' must be present in the 'description' column ",
+         "of the 'enrich_result' object")
+  }
+
+  if ( !grepl(enrich_result[["gene_id"]][1], pattern = "([0-9]{2,5}/)+") ) {
+    stop(
+      "The 'gene_id' column must contain Entrez gene IDs separated with a '/'"
+    )
+  }
 
   message("Pulling genes for given pathway...", appendLF = FALSE)
   pathway_genes_entrez <- enrich_result %>%
