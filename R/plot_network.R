@@ -221,7 +221,7 @@ plot_network <- function(
   } else if (label) {
     hub_nodes <- as_tibble(network) %>%
       arrange(desc(hub_score)) %>%
-      slice_head(n = 2 + ceiling(nrow(as_tibble(network)) * 0.02)) %>%
+      slice_head(n = 3 + ceiling(nrow(as_tibble(network)) * 0.01)) %>%
       pull(name)
 
     network <- network %>%
