@@ -18,6 +18,7 @@
 #' @export
 #'
 #' @import dplyr
+#' @importFrom purrr map imap
 #'
 #' @details The "min_steiner" method is implemented with the `SteinerNet`
 #'   package.
@@ -41,7 +42,7 @@ integrate_networks <- function(df_list, col, order, ppi_data = innatedb_exp, see
 
   # Build a network for each data frame in df_list
   message("==> Build individual networks...")
-  individual_networks <- input_dfs_clean %>% purrr::map(
+  individual_networks <- input_dfs_clean %>% map(
     ~build_network(
       df = .x,
       col = "name",
@@ -52,7 +53,7 @@ integrate_networks <- function(df_list, col, order, ppi_data = innatedb_exp, see
   )
 
   # Build the combined/integrated network by first joining the inputs, making
-  # sure to remove duplicates before assiging the sources
+  # sure to remove duplicates before assigning the sources
   message("\n==> Build combined network...")
   combined_seed_nodes <- input_dfs_clean %>%
     map(~distinct(.x, name, .keep_all = TRUE)) %>%
@@ -71,7 +72,7 @@ integrate_networks <- function(df_list, col, order, ppi_data = innatedb_exp, see
   # Identify novel nodes present only in the combined network
   message("\n==> Identify novel nodes...")
   individual_network_nodes <- individual_networks %>%
-    purrr::map(~as_tibble(.x)) %>%
+    map(~as_tibble(.x)) %>%
     bind_rows(., .id = "source_network") %>%
     pull("name")
 
@@ -94,7 +95,7 @@ integrate_networks <- function(df_list, col, order, ppi_data = innatedb_exp, see
     )
 
   # Return both network objects
-  message("Done.\n")
+  message("\n==> Done.\n")
   return(
     list(
       "integrated_network"  = combined_network_meta,
