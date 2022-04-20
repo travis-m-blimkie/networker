@@ -104,6 +104,8 @@ plot_network <- function(
   ...
 ) {
 
+  set.seed(seed)
+
   # Set up fill scaling based on argument `fill_type`
   if (fill_type == "fold_change") {
     network <- network %>%
@@ -155,7 +157,6 @@ plot_network <- function(
   # positions using the appropriate function from the ForceAtlas2 package
   if (layout == "force_atlas") {
     message("Calculating Force Atlas node positions...")
-    set.seed(seed)
     layout_object <- ForceAtlas2::layout.forceatlas2(
       graph    = network,
       directed = FALSE,
