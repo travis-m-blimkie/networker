@@ -14,6 +14,7 @@ plot_network(
   edge_colour = "grey50",
   edge_alpha = 0.2,
   node_size = c(3, 9),
+  node_colour = "grey30",
   int_colour = "grey70",
   label = FALSE,
   label_column,
@@ -55,6 +56,9 @@ to green and red for negative and positive values, respectively.}
 
 \item{node_size}{Numeric vector of length two, specifying size range of nodes
 (maps to node degree). Default is \code{c(3, 9)}.}
+
+\item{node_colour}{Colour (stroke or outline) of all nodes in the network.
+Defaults to "grey30".}
 
 \item{int_colour}{Fill colour for non-seed nodes, i.e. interactors. Defaults
 to "grey70"}

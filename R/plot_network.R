@@ -17,6 +17,8 @@
 #' @param edge_alpha Transparency of edges, defaults to 0.2
 #' @param node_size Numeric vector of length two, specifying size range of nodes
 #' (maps to node degree). Default is `c(3, 9)`.
+#' @param node_colour Colour (stroke or outline) of all nodes in the network.
+#'   Defaults to "grey30".
 #' @param int_colour Fill colour for non-seed nodes, i.e. interactors. Defaults
 #'   to "grey70"
 #' @param label Boolean, whether labels should be added to nodes. Defaults to
@@ -89,6 +91,7 @@ plot_network <- function(
   edge_colour    = "grey50",
   edge_alpha     = 0.2,
   node_size      = c(3, 9),
+  node_colour    = "grey30",
   int_colour     = "grey70",
   label          = FALSE,
   label_column,
@@ -203,7 +206,7 @@ plot_network <- function(
 
     ggraph(network, layout = layout_object) +
       geom_edge_link(show.legend = FALSE, alpha = edge_alpha, colour = edge_colour) +
-      geom_node_point(aes(size = degree, fill = new_fill_col), pch = 21, colour = "grey70") +
+      geom_node_point(aes(size = degree, fill = new_fill_col), pch = 21, colour = node_colour) +
       network_fill_geom +
       geom_node_text(
         aes(label = node_label, colour = is_starter),
@@ -247,7 +250,7 @@ plot_network <- function(
 
     ggraph(network, layout = layout_object) +
       geom_edge_link(show.legend = FALSE, alpha = edge_alpha, colour = edge_colour) +
-      geom_node_point(aes(size = degree, fill = new_fill_col), pch = 21, colour = "grey70") +
+      geom_node_point(aes(size = degree, fill = new_fill_col), pch = 21, colour = node_colour) +
       network_fill_geom +
       geom_node_text(
         aes(label = node_label, colour = is_hub),
@@ -274,7 +277,7 @@ plot_network <- function(
   } else {
     ggraph(network, layout = layout_object) +
       geom_edge_link(show.legend = FALSE, alpha = edge_alpha, colour = edge_colour) +
-      geom_node_point(aes(size = degree, fill = new_fill_col), pch = 21) +
+      geom_node_point(aes(size = degree, fill = new_fill_col), pch = 21, colour = node_colour) +
       network_fill_geom +
       scale_size_continuous(range = node_size, guide = "none") +
       labs(fill = NULL) +
