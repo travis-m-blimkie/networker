@@ -13,8 +13,9 @@
 #' @param legend Should a legend be included? Defaults to FALSE
 #' @param fontfamily Font to use for labels and legend (if present). Defaults to
 #'   "Helvetica".
-#' @param edge_colour Edge colour, defaults to "grey50"
-#' @param edge_alpha Transparency of edges, defaults to 0.2
+#' @param edge_colour_ Edge colour, defaults to "grey40"
+#' @param edge_alpha_ Transparency of edges, defaults to 0.5
+#' @param edge_width_ Thickness of edges connecting nodes. Defaults to 0.5
 #' @param node_size Numeric vector of length two, specifying size range of nodes
 #' (maps to node degree). Default is `c(3, 9)`.
 #' @param node_colour Colour (stroke or outline) of all nodes in the network.
@@ -88,8 +89,9 @@ plot_network <- function(
   layout         = "kk",
   legend         = FALSE,
   fontfamily     = "Helvetica",
-  edge_colour    = "grey50",
-  edge_alpha     = 0.2,
+  edge_colour_   = "grey40",
+  edge_alpha_    = 0.5,
+  edge_width_    = 0.5,
   node_size      = c(3, 9),
   node_colour    = "grey30",
   int_colour     = "grey70",
@@ -205,7 +207,7 @@ plot_network <- function(
     }
 
     ggraph(network, layout = layout_object) +
-      geom_edge_link(show.legend = FALSE, alpha = edge_alpha, colour = edge_colour) +
+      geom_edge_link(show.legend = FALSE, edge_alpha = edge_alpha_, edge_colour = edge_colour_, edge_width = edge_width_) +
       geom_node_point(aes(size = degree, fill = new_fill_col), pch = 21, colour = node_colour) +
       network_fill_geom +
       geom_node_text(
@@ -249,7 +251,7 @@ plot_network <- function(
       )
 
     ggraph(network, layout = layout_object) +
-      geom_edge_link(show.legend = FALSE, alpha = edge_alpha, colour = edge_colour) +
+      geom_edge_link(show.legend = FALSE, edge_alpha = edge_alpha_, edge_colour = edge_colour_, edge_width = edge_width_) +
       geom_node_point(aes(size = degree, fill = new_fill_col), pch = 21, colour = node_colour) +
       network_fill_geom +
       geom_node_text(
@@ -276,7 +278,7 @@ plot_network <- function(
 
   } else {
     ggraph(network, layout = layout_object) +
-      geom_edge_link(show.legend = FALSE, alpha = edge_alpha, colour = edge_colour) +
+      geom_edge_link(show.legend = FALSE, edge_alpha = edge_alpha_, edge_colour = edge_colour_, edge_width = edge_width_) +
       geom_node_point(aes(size = degree, fill = new_fill_col), pch = 21, colour = node_colour) +
       network_fill_geom +
       scale_size_continuous(range = node_size, guide = "none") +

@@ -11,8 +11,9 @@ plot_network(
   layout = "kk",
   legend = FALSE,
   fontfamily = "Helvetica",
-  edge_colour = "grey50",
-  edge_alpha = 0.2,
+  edge_colour_ = "grey40",
+  edge_alpha_ = 0.5,
+  edge_width_ = 0.5,
   node_size = c(3, 9),
   node_colour = "grey30",
   int_colour = "grey70",
@@ -50,9 +51,11 @@ to green and red for negative and positive values, respectively.}
 \item{fontfamily}{Font to use for labels and legend (if present). Defaults to
 "Helvetica".}
 
-\item{edge_colour}{Edge colour, defaults to "grey50"}
+\item{edge_colour_}{Edge colour, defaults to "grey40"}
 
-\item{edge_alpha}{Transparency of edges, defaults to 0.2}
+\item{edge_alpha_}{Transparency of edges, defaults to 0.5}
+
+\item{edge_width_}{Thickness of edges connecting nodes. Defaults to 0.5}
 
 \item{node_size}{Numeric vector of length two, specifying size range of nodes
 (maps to node degree). Default is \code{c(3, 9)}.}
