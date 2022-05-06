@@ -36,17 +36,17 @@ plot_network(
 
 \item{fill_column}{Tidy-select column for mapping node colour. Designed to
 handle continuous numeric mappings (either positive/negative only, or
-both), and categorical mappings. Two-sided numeric columns will be mapped
-to green and red for negative and positive values, respectively.}
+both), and categorical mappings, plus a special case for displaying fold
+changes from, for example, RNA-Seq data. See \code{fill_type} for more details
+on how to set this up.}
 
-\item{fill_type}{Type of fill mapping to perform for nodes, based on supplied
-\code{fill_column}. Options are: "fold_change", "two_sided", "one_sided", or
-"categorical".}
+\item{fill_type}{String denoting type of fill mapping to perform for nodes.
+Options are: "fold_change", "two_sided", "one_sided", or "categorical".}
 
 \item{layout}{Layout of nodes in the network. Supports all layouts from
-\code{ggraph}/\code{igraph}, as well as "force_atlas" (see Details)}
+\code{ggraph}/\code{igraph}, as well as "force_atlas" (see Details).}
 
-\item{legend}{Should a legend be included? Defaults to FALSE}
+\item{legend}{Should a legend be included? Defaults to FALSE.}
 
 \item{fontfamily}{Font to use for labels and legend (if present). Defaults to
 "Helvetica".}
@@ -57,23 +57,24 @@ to green and red for negative and positive values, respectively.}
 
 \item{edge_width_}{Thickness of edges connecting nodes. Defaults to 0.5}
 
-\item{node_size}{Numeric vector of length two, specifying size range of nodes
-(maps to node degree). Default is \code{c(3, 9)}.}
+\item{node_size}{Numeric vector of length two, specifying size range of node
+sizes (maps to node degree). Default is \code{c(3, 9)}.}
 
 \item{node_colour}{Colour (stroke or outline) of all nodes in the network.
 Defaults to "grey30".}
 
 \item{int_colour}{Fill colour for non-seed nodes, i.e. interactors. Defaults
-to "grey70"}
+to "grey70".}
 
 \item{label}{Boolean, whether labels should be added to nodes. Defaults to
-FALSE. Note when TRUE, only seed nodes receive labels.}
+FALSE.}
 
 \item{label_column}{Tidy-select column of the network/data to be used in
-labeling nodes.}
+labeling nodes. Recommend setting to \code{gene_name}, which contains HGNC
+symbols mapped from the input Ensembl IDs via biomaRt.}
 
-\item{label_filter}{Degree filter used to determine if a given node should be
-labeled. Defaults to 0. This value can be tweaked to reduce the number of
+\item{label_filter}{Degree filter used to determine which nodes should be
+labeled. Defaults to 0. This value can be increased to reduce the number of
 node labels, to prevent the network from being too crowded.}
 
 \item{label_size}{Size of node labels, defaults to 5.}
@@ -96,9 +97,10 @@ value.}
 from \code{build_network}.}
 
 \item{seed}{Number used in call to \code{set.seed()} to allow for reproducible
-network generation. Can be changed to get slightly different layouts.}
+network generation. Can be changed to get slightly different layouts, and
+ensure consistent result between runs.}
 
-\item{...}{Further parameters to be passed on to \code{ggplot2::theme()}, e.g.
+\item{...}{Further parameters can be passed on to \code{ggplot2::theme()}, e.g.
 \code{legend.position}}
 }
 \value{
@@ -118,9 +120,10 @@ the desired column. "fold_change" represents a special case, where the fill
 column is numeric and whose values should be mapped to up (> 0) or down (<
 0). "two_sided" and "one_sided" are designed for numeric data that contains
 either positive and negative values, or only positive/negative values,
-respectively. "categorical" is designed for non-numeric colour mapping.
+respectively. "categorical" handles any other non-numeric colour mapping,
+and uses "Set1" from RColorBrewer.
 
-Node statistics (degree, betweenness, and hub score) and calculated using
+Node statistics (degree, betweenness, and hub score) are calculated using
 the respective functions from the \code{tidygraph} package.
 
 If plotting a network created from the \code{extract_subnetwork} function, the
@@ -128,7 +131,10 @@ genes belonging to the extracted pathway (i.e. the contents of the
 "gene_id" column in the enrichment results) will be highlighted, instead of
 hub nodes. The colour used here can be controlled via the \code{hub_colour}
 argument, and this behaviour can be turned off altogether by setting the
-\code{subnet} argument to FALSE.
+\code{subnet} argument to FALSE to return an "standard" network. Additionally,
+one can set the "starters" attribute of the network being plotted to a
+custom character vector of Ensembl gene IDs, to allow highlighting a custom
+selection of nodes.
 }
 \references{
 See \url{https://github.com/analyxcompany/ForceAtlas2} for details on

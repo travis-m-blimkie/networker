@@ -3,31 +3,32 @@
 #' @param network `tidygraph` object, output from `build_network`
 #' @param fill_column Tidy-select column for mapping node colour. Designed to
 #'   handle continuous numeric mappings (either positive/negative only, or
-#'   both), and categorical mappings. Two-sided numeric columns will be mapped
-#'   to green and red for negative and positive values, respectively.
-#' @param fill_type Type of fill mapping to perform for nodes, based on supplied
-#'   `fill_column`. Options are: "fold_change", "two_sided", "one_sided", or
-#'   "categorical".
+#'   both), and categorical mappings, plus a special case for displaying fold
+#'   changes from, for example, RNA-Seq data. See `fill_type` for more details
+#'   on how to set this up.
+#' @param fill_type String denoting type of fill mapping to perform for nodes.
+#'   Options are: "fold_change", "two_sided", "one_sided", or "categorical".
 #' @param layout Layout of nodes in the network. Supports all layouts from
-#'   `ggraph`/`igraph`, as well as "force_atlas" (see Details)
-#' @param legend Should a legend be included? Defaults to FALSE
+#'   `ggraph`/`igraph`, as well as "force_atlas" (see Details).
+#' @param legend Should a legend be included? Defaults to FALSE.
 #' @param fontfamily Font to use for labels and legend (if present). Defaults to
 #'   "Helvetica".
 #' @param edge_colour_ Edge colour, defaults to "grey40"
 #' @param edge_alpha_ Transparency of edges, defaults to 0.5
 #' @param edge_width_ Thickness of edges connecting nodes. Defaults to 0.5
-#' @param node_size Numeric vector of length two, specifying size range of nodes
-#' (maps to node degree). Default is `c(3, 9)`.
+#' @param node_size Numeric vector of length two, specifying size range of node
+#'   sizes (maps to node degree). Default is `c(3, 9)`.
 #' @param node_colour Colour (stroke or outline) of all nodes in the network.
 #'   Defaults to "grey30".
 #' @param int_colour Fill colour for non-seed nodes, i.e. interactors. Defaults
-#'   to "grey70"
+#'   to "grey70".
 #' @param label Boolean, whether labels should be added to nodes. Defaults to
-#'   FALSE. Note when TRUE, only seed nodes receive labels.
+#'   FALSE.
 #' @param label_column Tidy-select column of the network/data to be used in
-#'   labeling nodes.
-#' @param label_filter Degree filter used to determine if a given node should be
-#'   labeled. Defaults to 0. This value can be tweaked to reduce the number of
+#'   labeling nodes. Recommend setting to `gene_name`, which contains HGNC
+#'   symbols mapped from the input Ensembl IDs via biomaRt.
+#' @param label_filter Degree filter used to determine which nodes should be
+#'   labeled. Defaults to 0. This value can be increased to reduce the number of
 #'   node labels, to prevent the network from being too crowded.
 #' @param label_size Size of node labels, defaults to 5.
 #' @param label_colour Colour of node labels, defaults to "black"
@@ -43,8 +44,9 @@
 #'   `extract_subnetwork` should be treated as such, or just as a normal network
 #'   from `build_network`.
 #' @param seed Number used in call to `set.seed()` to allow for reproducible
-#'   network generation. Can be changed to get slightly different layouts.
-#' @param ... Further parameters to be passed on to `ggplot2::theme()`, e.g.
+#'   network generation. Can be changed to get slightly different layouts, and
+#'   ensure consistent result between runs.
+#' @param ... Further parameters can be passed on to `ggplot2::theme()`, e.g.
 #'   `legend.position`
 #'
 #' @return An object of class "gg"
@@ -65,9 +67,10 @@
 #'   column is numeric and whose values should be mapped to up (> 0) or down (<
 #'   0). "two_sided" and "one_sided" are designed for numeric data that contains
 #'   either positive and negative values, or only positive/negative values,
-#'   respectively. "categorical" is designed for non-numeric colour mapping.
+#'   respectively. "categorical" handles any other non-numeric colour mapping,
+#'   and uses "Set1" from RColorBrewer.
 #'
-#'   Node statistics (degree, betweenness, and hub score) and calculated using
+#'   Node statistics (degree, betweenness, and hub score) are calculated using
 #'   the respective functions from the `tidygraph` package.
 #'
 #'   If plotting a network created from the `extract_subnetwork` function, the
@@ -75,7 +78,10 @@
 #'   "gene_id" column in the enrichment results) will be highlighted, instead of
 #'   hub nodes. The colour used here can be controlled via the `hub_colour`
 #'   argument, and this behaviour can be turned off altogether by setting the
-#'   `subnet` argument to FALSE.
+#'   `subnet` argument to FALSE to return an "standard" network. Additionally,
+#'   one can set the "starters" attribute of the network being plotted to a
+#'   custom character vector of Ensembl gene IDs, to allow highlighting a custom
+#'   selection of nodes.
 #'
 #' @references See <https://github.com/analyxcompany/ForceAtlas2> for details on
 #'   this method.
