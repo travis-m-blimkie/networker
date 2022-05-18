@@ -4,6 +4,12 @@
 #' @param col Column of input genes as Ensembl IDs (character)
 #' @param order Desired network order. Possible options are "zero" (default),
 #'   "first," "min_simple," or "min_steiner."
+#' @param hub_measure Character denoting what measure should be used in
+#'   determining which nodes to highlight as hubs when plotting the network.
+#'   Options include "betweenness" (default), "degree", and "hubscore". These
+#'   represent network statistics calculated by their respective
+#'   `tidygraph::centrality_x`, functions, specifically `degree`, `betweenness`,
+#'   and `hub_score`.
 #' @param ppi_data Data frame of PPI data; must contain rows of interactions as
 #'   pairs of Ensembl gene IDs, with columns named "ensembl_gene_A" and
 #'   "ensembl_gene_B". Defaults to pre-packaged InnateDB PPI data.
@@ -24,7 +30,7 @@
 #'
 #' @seealso <https://www.github.com/travis-m-blimkie/networker>
 #'
-build_network <- function(df, col, order, ppi_data = innatedb_exp, seed = 1) {
+build_network <- function(df, col, order, hub_measure = "betweenness", ppi_data = innatedb_exp, seed = 1) {
 
   # Check for and remove any duplicate IDs, which will cause problems later.
   # Make sure to warn the user about this.
@@ -68,18 +74,38 @@ build_network <- function(df, col, order, ppi_data = innatedb_exp, seed = 1) {
     )
   }
 
+  if (hub_measure == "betweenness") {
+    hub_fn <- centrality_betweenness
+  } else if (hub_measure == "degree") {
+    hub_fn <- centrality_degree
+  } else if (hub_measure == "hubscore") {
+    hub_fn <- centrality_hub
+  } else {
+    stop(
+      "Argument 'hub_measure' must be one of 'betweenness', 'degree', or 'hubscore'"
+    )
+  }
+
   message("Creating network...")
-  network_init <- edge_table %>%
+  network_init_1 <- edge_table %>%
     as_tbl_graph(directed = FALSE) %>%
     remove_subnetworks() %>%
     as_tbl_graph() %>%
     mutate(
       degree      = centrality_degree(),
       betweenness = centrality_betweenness(),
-      seed        = (name %in% gene_vector),
-      hub_score   = centrality_hub()
+      seed        = (name %in% gene_vector)
     ) %>%
     select(-comp)
+
+  network_init_2 <-
+    if (hub_measure == "betweenness") {
+      network_init_1 %>% mutate(hub_score = betweenness)
+    } else if (hub_measure == "degree") {
+      network_init_1 %>% mutate(hub_score = degree)
+    } else if (hub_measure == "hubscore") {
+      network_init_1 %>% mutate(hub_score = centrality_hub())
+    }
 
 
   # Perform node filtering/trimming for minimum order networks, and recalculate
@@ -87,49 +113,67 @@ build_network <- function(df, col, order, ppi_data = innatedb_exp, seed = 1) {
   if (order == "min_simple") {
 
     message("Performing 'simple' minimum network trimming...")
-    network_out <- network_init %>%
+    network_out_1 <- network_init_2 %>%
       filter(
         !(degree == 1 & !seed),
         !(betweenness == 0 & !seed)
       ) %>%
       mutate(
-        degree      = centrality_degree(),
-        betweenness = centrality_betweenness(),
-        hub_score   = centrality_hub()
+        degree = centrality_degree(),
+        betweenness = centrality_betweenness()
       )
+
+    network_out_2 <-
+      if (hub_measure == "betweenness") {
+        network_out_1 %>% mutate(hub_score = betweenness)
+      } else if (hub_measure == "degree") {
+        network_out_1 %>% mutate(hub_score = degree)
+      } else if (hub_measure == "hubscore") {
+        network_out_1 %>% mutate(hub_score = centrality_hub())
+      }
+
   } else if (order == "min_steiner") {
 
     message("Performing 'Steiner' minimum network trimming...")
     set.seed(seed)
 
-    terminals <- network_init %>%
+    terminals <- network_init_2 %>%
       activate(nodes) %>%
       pull(name) %>%
       intersect(gene_vector)
 
-    network_out <- SteinerNet::steinertree(
+    network_out_1 <- SteinerNet::steinertree(
       type      = "SP",
       terminals = terminals,
-      graph     = network_init,
+      graph     = network_init_2,
       color     = FALSE
     ) %>%
       magrittr::extract2(1) %>%
       as_tbl_graph(directed = FALSE) %>%
       mutate(
-        degree      = centrality_degree(),
-        betweenness = centrality_betweenness(),
-        hub_score   = centrality_hub()
+        degree = centrality_degree(),
+        betweenness = centrality_betweenness()
       )
+
+    network_out_2 <-
+      if (hub_measure == "betweenness") {
+        network_out_1 %>% mutate(hub_score = betweenness)
+      } else if (hub_measure == "degree") {
+        network_out_1 %>% mutate(hub_score = degree)
+      } else if (hub_measure == "hubscore") {
+        network_out_1 %>% mutate(hub_score = centrality_hub())
+      }
+
   } else {
-    network_out <- network_init
+    network_out_2 <- network_init_2
   }
 
-  if (nrow(as_tibble(network_out)) > 2000) {
+  if (nrow(as_tibble(network_out_2)) > 2000) {
     message(
       "Warning:\nYour network contains more than 2000 nodes, and will likely ",
       "be difficult to interpret when plotted."
     )
-  } else if (nrow(as_tibble(network_out)) > 2000 & order != "zero") {
+  } else if (nrow(as_tibble(network_out_2)) > 2000 & order != "zero") {
     message(
       "\nWarning:\nYour network contains more than 2000 nodes, and will ",
       "likely be difficult to interpret when plotted. Consider switching to a ",
@@ -142,7 +186,7 @@ build_network <- function(df, col, order, ppi_data = innatedb_exp, seed = 1) {
     select("name" = ensembl_gene_id, "gene_name" = hgnc_symbol)
 
   network_mapped <- left_join(
-    network_out,
+    network_out_2,
     ensembl_to_hgnc,
     by = "name"
   )

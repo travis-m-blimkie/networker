@@ -4,7 +4,14 @@
 \alias{build_network}
 \title{Construct a PPI network from input genes and InnateDB's database}
 \usage{
-build_network(df, col, order, ppi_data = innatedb_exp, seed = 1)
+build_network(
+  df,
+  col,
+  order,
+  hub_measure = "betweenness",
+  ppi_data = innatedb_exp,
+  seed = 1
+)
 }
 \arguments{
 \item{df}{Input data frame containing genes of interest}
@@ -13,6 +20,13 @@ build_network(df, col, order, ppi_data = innatedb_exp, seed = 1)
 
 \item{order}{Desired network order. Possible options are "zero" (default),
 "first," "min_simple," or "min_steiner."}
+
+\item{hub_measure}{Character denoting what measure should be used in
+determining which nodes to highlight as hubs when plotting the network.
+Options include "betweenness" (default), "degree", and "hubscore". These
+represent network statistics calculated by their respective
+\code{tidygraph::centrality_x}, functions, specifically \code{degree}, \code{betweenness},
+and \code{hub_score}.}
 
 \item{ppi_data}{Data frame of PPI data; must contain rows of interactions as
 pairs of Ensembl gene IDs, with columns named "ensembl_gene_A" and
