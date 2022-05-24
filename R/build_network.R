@@ -107,11 +107,11 @@ build_network <- function(df, col, order, hub_measure = "betweenness", ppi_data 
 
   network_init_2 <-
     if (hub_measure == "betweenness") {
-      network_init_1 %>% mutate(hub_score = betweenness)
+      network_init_1 %>% mutate(hub_score_btw = betweenness)
     } else if (hub_measure == "degree") {
-      network_init_1 %>% mutate(hub_score = degree)
+      network_init_1 %>% mutate(hub_score_deg = degree)
     } else if (hub_measure == "hubscore") {
-      network_init_1 %>% mutate(hub_score = centrality_hub())
+      network_init_1 %>% mutate(hub_score_hub = centrality_hub())
     }
 
 
@@ -132,11 +132,11 @@ build_network <- function(df, col, order, hub_measure = "betweenness", ppi_data 
 
     network_out_2 <-
       if (hub_measure == "betweenness") {
-        network_out_1 %>% mutate(hub_score = betweenness)
+        network_out_1 %>% mutate(hub_score_btw = betweenness)
       } else if (hub_measure == "degree") {
-        network_out_1 %>% mutate(hub_score = degree)
+        network_out_1 %>% mutate(hub_score_deg = degree)
       } else if (hub_measure == "hubscore") {
-        network_out_1 %>% mutate(hub_score = centrality_hub())
+        network_out_1 %>% mutate(hub_score_hub = centrality_hub())
       }
 
   } else if (order == "min_steiner") {
@@ -164,11 +164,11 @@ build_network <- function(df, col, order, hub_measure = "betweenness", ppi_data 
 
     network_out_2 <-
       if (hub_measure == "betweenness") {
-        network_out_1 %>% mutate(hub_score = betweenness)
+        network_out_1 %>% mutate(hub_score_btw = betweenness)
       } else if (hub_measure == "degree") {
-        network_out_1 %>% mutate(hub_score = degree)
+        network_out_1 %>% mutate(hub_score_deg = degree)
       } else if (hub_measure == "hubscore") {
-        network_out_1 %>% mutate(hub_score = centrality_hub())
+        network_out_1 %>% mutate(hub_score_hub = centrality_hub())
       }
 
   } else {

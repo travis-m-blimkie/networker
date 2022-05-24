@@ -240,6 +240,7 @@ plot_network <- function(
 
   } else if (label) {
     hub_nodes <- as_tibble(network) %>%
+      rename("hub_score" = starts_with("hub_score")) %>%
       arrange(desc(hub_score)) %>%
       slice_head(n = 3 + ceiling(nrow(as_tibble(network)) * 0.01)) %>%
       pull(name)

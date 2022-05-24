@@ -1,6 +1,6 @@
 Package: networker
 Title: Reproducible PPI Network Creation and Visualization in R
-Version: 0.0.994
+Version: 0.0.995
 Authors@R:
     person("Travis", "Blimkie", , "travis.m.blimkie@gmail.com", role = c("aut", "cre"))
 Description: A suite of functions to make it simple to construct PPI networks
