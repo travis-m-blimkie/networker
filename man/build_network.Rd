@@ -44,6 +44,13 @@ Construct a PPI network from input genes and InnateDB's database
 \details{
 The "min_steiner" method is implemented with the \code{SteinerNet}
 package.
+
+The "hub_measure" argument determines how \code{build_network} assesses
+connectedness of nodes in the network, which will be used to highlight nodes
+when visualizing with \code{plot_network}. The options are "degree",
+"betweenness", or "hubscore". This last option uses the igraph implementation
+of the Kleinburg hub centrality score - details on this method can be found
+at \code{?igraph::hub_score}.
 }
 \references{
 See \url{https://cran.r-project.org/web/packages/SteinerNet/index.html}

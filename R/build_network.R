@@ -25,6 +25,13 @@
 #' @details The "min_steiner" method is implemented with the `SteinerNet`
 #'   package.
 #'
+#' The "hub_measure" argument determines how `build_network` assesses
+#' connectedness of nodes in the network, which will be used to highlight nodes
+#' when visualizing with `plot_network`. The options are "degree",
+#' "betweenness", or "hubscore". This last option uses the igraph implementation
+#' of the Kleinburg hub centrality score - details on this method can be found
+#' at `?igraph::hub_score`.
+#'
 #' @references See <https://cran.r-project.org/web/packages/SteinerNet/index.html>
 #'   for details on the Steiner network trimming.
 #'
