@@ -41,7 +41,8 @@ networks.
 > ex_network <- build_network(
     df    = ex_genes,
     col   = "ensembl_gene_id",
-    order = "min_steiner"
+    order = "min_steiner",
+    hub_measure = "degree"
   )
 # ==> INFO: Found 3 duplicate IDs in the input column, which have been removed:
 # ENSG00000172724, ENSG00000169397, ENSG00000169385
@@ -61,13 +62,13 @@ the automatically added "gene_name" column to provide the labels:
     network      = ex_net,
     fill_column  = log2FoldChange,
     fill_type    = "fold_change",
-    layout       = "force_atlas",
+    layout       = "nicely",
     label        = TRUE,
     label_column = gene_name,
     label_filter = 2,
+    label_size   = 4,
     legend       = TRUE
   )
-# Calculating Force Atlas node positions...
 # Warning message:
 # Removed 166 rows containing missing values (geom_text_repel).
 ```
@@ -106,13 +107,18 @@ highlighted when plotting:
     enrich_result = sig_pathways,
     pathway_name  = "Interferon gamma signaling"
   )
+# Checking inputs...
+# Pulling genes for given pathway...found 13 genes.
+# Calculating subgraphs from specified nodes...
+# Determining shortest paths between nodes...
+# Done, new subnetwork contains 20 nodes.
 
 > plot_network(
     network      = ex_net_module,
     fill_column  = log2FoldChange,
     fill_type    = "fold_change",
     legend       = TRUE,
-    layout       = "kk",
+    layout       = "nicely",
     label        = TRUE,
     label_column = gene_name,
     label_filter = 0,
