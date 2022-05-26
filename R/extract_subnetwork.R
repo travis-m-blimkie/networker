@@ -17,9 +17,10 @@
 #' @importFrom igraph as.igraph V induced_subgraph decompose.graph simplify delete.vertices get.shortest.paths
 #'
 #' @details Uses functions from the igraph package to extract a minimally
-#'   connected subnetwork or module from the starting network, using genes from
-#'   a given pathway as the basis. To see what genes were pulled out for the
-#'   pathway, check `attr(x, "starters")`.
+#'   connected subnetwork or module from the starting network, using either a
+#'   list of Ensembl genes or genes from an enriched pathway as the basis. To
+#'   see what genes were pulled out for the pathway, check `attr(x,
+#'   "starters")`.
 #'
 #' @references Code for network module (subnetwork) extraction was based off of
 #' that used in jboktor/NetworkAnalystR on Github.
@@ -42,13 +43,13 @@ extract_subnetwork <- function(network, genes = NULL, enrich_result = NULL, path
 
   if (!is.null(enrich_result)) {
     if ( !all(c("description", "gene_id") %in% colnames(enrich_result)) ) {
-      stop("Argument 'enrich_result' must contain the columns 'description' and ",
-           "'gene_id'")
+      stop("Argument 'enrich_result' must contain the columns 'description' ",
+           "and 'gene_id'")
     }
 
     if (!pathway_name %in% enrich_result[["description"]]) {
-      stop("Argument 'pathway_name' must be present in the 'description' column ",
-           "of the 'enrich_result' object")
+      stop("Argument 'pathway_name' must be present in the 'description' ",
+           "column of the 'enrich_result' object")
     }
 
     if ( !grepl(enrich_result[["gene_id"]][1], pattern = "([0-9]{2,5}/)+") ) {

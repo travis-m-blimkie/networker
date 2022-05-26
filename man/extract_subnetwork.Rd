@@ -27,9 +27,9 @@ Extract a subnetwork based on pathway genes
 }
 \details{
 Uses functions from the igraph package to extract a minimally
-connected subnetwork or module from the starting network, using genes from
-a given pathway as the basis. To see what genes were pulled out for the
-pathway, check \code{attr(x, "starters")}.
+connected subnetwork or module from the starting network, using either a
+list of Ensembl genes or genes from an enriched pathway as the basis. To
+see what genes were pulled out for the pathway, check \code{attr(x, "starters")}.
 }
 \references{
 Code for network module (subnetwork) extraction was based off of
