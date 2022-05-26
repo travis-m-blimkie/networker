@@ -1,7 +1,11 @@
 #' Extract a subnetwork based on pathway genes
 #'
 #' @param network Input network object; output from `build_network`
-#' @param enrich_result Pathway enrichment result, output from `enrich_network`
+#' @param genes List of Ensembl gene IDs to use as the starting point to extract
+#'   a subnetwork from the initial network. You must provide either `genes` or
+#'   `enrich_result` argument.
+#' @param enrich_result Pathway enrichment result, output from `enrich_network`.
+#'   You must provide either `genes` or `enrich_result` argument.
 #' @param pathway_name Name of the pathway determining what genes (nodes) are
 #'   pulled from the input network.
 #'
@@ -22,59 +26,80 @@
 #'
 #' @seealso <https://www.github.com/travis-m-blimkie/networker>
 #'
-extract_subnetwork <- function(network, enrich_result, pathway_name) {
+extract_subnetwork <- function(network, genes = NULL, enrich_result = NULL, pathway_name) {
+
+  if (is.null(genes) & is.null(enrich_result)) {
+    stop("You must specify either 'genes' or 'enrich_result' to provide genes ",
+         "to extract from the initial network")
+  }
 
   message("Checking inputs...")
-  if ( !all(c("description", "gene_id") %in% colnames(enrich_result)) ) {
-    stop("Argument 'enrich_result' must contain the columns 'description' and ",
-         "'gene_id'")
+  if (!is.null(genes)) {
+    if ( !grepl(x = genes[[1]], pattern = "^ENSG") ) {
+      stop("Argument 'genes' must be a list of Ensembl gene IDs")
+    }
   }
 
-  if (!pathway_name %in% enrich_result[["description"]]) {
-    stop("Argument 'pathway_name' must be present in the 'description' column ",
-         "of the 'enrich_result' object")
+  if (!is.null(enrich_result)) {
+    if ( !all(c("description", "gene_id") %in% colnames(enrich_result)) ) {
+      stop("Argument 'enrich_result' must contain the columns 'description' and ",
+           "'gene_id'")
+    }
+
+    if (!pathway_name %in% enrich_result[["description"]]) {
+      stop("Argument 'pathway_name' must be present in the 'description' column ",
+           "of the 'enrich_result' object")
+    }
+
+    if ( !grepl(enrich_result[["gene_id"]][1], pattern = "([0-9]{2,5}/)+") ) {
+      stop(
+        "The 'gene_id' column must contain Entrez gene IDs separated with a '/'"
+      )
+    }
   }
 
-  if ( !grepl(enrich_result[["gene_id"]][1], pattern = "([0-9]{2,5}/)+") ) {
-    stop(
-      "The 'gene_id' column must contain Entrez gene IDs separated with a '/'"
-    )
+
+  if (!is.null(genes)) {
+    message("Using provided list of Ensembl genes...", appendLF = FALSE)
+    genes_to_extract <- genes
+
+  } else if (!is.null(enrich_result)) {
+    message("Pulling genes for given pathway...", appendLF = FALSE)
+    pathway_genes_entrez <- enrich_result %>%
+      filter(description == pathway_name) %>%
+      pull(gene_id) %>%
+      strsplit(., split = "/") %>%
+      unlist()
+
+    genes_to_extract <- biomart_id_mapping_human %>%
+      filter(entrez_gene_id %in% pathway_genes_entrez) %>%
+      pull(ensembl_gene_id) %>%
+      unique()
   }
 
-  message("Pulling genes for given pathway...", appendLF = FALSE)
-  pathway_genes_entrez <- enrich_result %>%
-    filter(description == pathway_name) %>%
-    pull(gene_id) %>%
-    strsplit(., split = "/") %>%
-    unlist()
+  message("found ", length(genes_to_extract), " genes.")
 
-  message("found ", length(pathway_genes_entrez), " genes.")
 
-  pathway_genes_ensembl <- biomart_id_mapping_human %>%
-    filter(entrez_gene_id %in% pathway_genes_entrez) %>%
-    pull(ensembl_gene_id) %>%
-    unique()
-
-  pathway_node_ids <- as_tibble(network) %>%
+  gene_node_ids <- as_tibble(network) %>%
     mutate(rn = row_number()) %>%
-    filter(name %in% pathway_genes_ensembl) %>%
+    filter(name %in% genes_to_extract) %>%
     pull(rn)
 
   # Get subgraphs, which will only contain the specified nodes
   message("Calculating subgraphs from specified nodes...")
-  pathway_subgraphs <- induced_subgraph(
+  all_subgraphs <- induced_subgraph(
     graph = as.igraph(network),
-    vids = pathway_node_ids
+    vids = gene_node_ids
   )
 
   # Decompose each subgraph
-  pathway_components <-
-    decompose.graph(graph = pathway_subgraphs, min.vertices = 1)
+  all_components <-
+    decompose.graph(graph = all_subgraphs, min.vertices = 1)
 
   # If all the specified nodes form a single, connected network, pull that...
-  if (length(pathway_components) == 1) {
+  if (length(all_components) == 1) {
     message("All nodes form a single network...")
-    module_network <- pathway_components[[1]]
+    module_network <- all_components[[1]]
 
     # ...or we need to minimally connect each subgraph we've identified
   } else {
@@ -82,11 +107,11 @@ extract_subnetwork <- function(network, enrich_result, pathway_name) {
 
     module_shortest_paths <- list()
 
-    for (i in 1:length(pathway_node_ids)) {
+    for (i in 1:length(gene_node_ids)) {
       module_shortest_paths[[i]] <- get.shortest.paths(
         as.igraph(network),
-        pathway_node_ids[i],
-        pathway_node_ids[-(1:i)]
+        gene_node_ids[i],
+        gene_node_ids[-(1:i)]
       )$vpath
     }
 
@@ -102,6 +127,6 @@ extract_subnetwork <- function(network, enrich_result, pathway_name) {
           nrow(module_network_tibble),
           " nodes.\n")
 
-  attr(module_network_tidygraph, "starters") <- pathway_genes_ensembl
+  attr(module_network_tidygraph, "starters") <- genes_to_extract
   return(module_network_tidygraph)
 }

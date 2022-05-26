@@ -4,12 +4,17 @@
 \alias{extract_subnetwork}
 \title{Extract a subnetwork based on pathway genes}
 \usage{
-extract_subnetwork(network, enrich_result, pathway_name)
+extract_subnetwork(network, genes = NULL, enrich_result = NULL, pathway_name)
 }
 \arguments{
 \item{network}{Input network object; output from \code{build_network}}
 
-\item{enrich_result}{Pathway enrichment result, output from \code{enrich_network}}
+\item{genes}{List of Ensembl gene IDs to use as the starting point to extract
+a subnetwork from the initial network. You must provide either \code{genes} or
+\code{enrich_result} argument.}
+
+\item{enrich_result}{Pathway enrichment result, output from \code{enrich_network}.
+You must provide either \code{genes} or \code{enrich_result} argument.}
 
 \item{pathway_name}{Name of the pathway determining what genes (nodes) are
 pulled from the input network.}
