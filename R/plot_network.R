@@ -40,6 +40,10 @@
 #' @param min_seg_length Minimum length of lines to be drawn from labels to
 #'   points. The default specified here is 0.25, half of the normal default
 #'   value.
+#' @param force_atlas_params List of parameters to tweak node positions when
+#'   using the Force Atlas layout. The following arguments must be supplied: k,
+#'   gravity, ks, ksmax, and delta. See `?ForceAtlas2::layout.forceatlas2` for
+#'   details and default values.
 #' @param subnet Logical determining if networks produced by
 #'   `extract_subnetwork` should be treated as such, or just as a normal network
 #'   from `build_network`.
@@ -110,6 +114,7 @@ plot_network <- function(
   label_face     = "bold",
   label_padding  = 0.25,
   min_seg_length = 0.25,
+  force_atlas_params = NULL,
   subnet         = TRUE,
   seed           = 1,
   ...
@@ -168,11 +173,26 @@ plot_network <- function(
   # positions using the appropriate function from the ForceAtlas2 package
   if (layout == "force_atlas") {
     message("Calculating Force Atlas node positions...")
-    layout_object <- ForceAtlas2::layout.forceatlas2(
-      graph    = network,
-      directed = FALSE,
-      plotstep = 0
-    )
+
+    if (is.null(force_atlas_params)) {
+      layout_object <- ForceAtlas2::layout.forceatlas2(
+        graph    = network,
+        directed = FALSE,
+        plotstep = 0
+      )
+    } else {
+      layout_object <- ForceAtlas2::layout.forceatlas2(
+        graph    = network,
+        directed = FALSE,
+        plotstep = 0,
+        k = force_atlas_params$k,
+        gravity = force_atlas_params$gravity,
+        ks = force_atlas_params$ks,
+        ksmax = force_atlas_params$ksmax,
+        delta = force_atlas_params$delta,
+        center = force_atlas_params$center
+      )
+    }
   } else {
     layout_object <- layout
   }

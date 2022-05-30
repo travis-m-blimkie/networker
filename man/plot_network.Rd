@@ -26,6 +26,7 @@ plot_network(
   label_face = "bold",
   label_padding = 0.25,
   min_seg_length = 0.25,
+  force_atlas_params = NULL,
   subnet = TRUE,
   seed = 1,
   ...
@@ -91,6 +92,11 @@ on calculated hub score) are highlighted with this colour, if \code{label = TRUE
 \item{min_seg_length}{Minimum length of lines to be drawn from labels to
 points. The default specified here is 0.25, half of the normal default
 value.}
+
+\item{force_atlas_params}{List of parameters to tweak node positions when
+using the Force Atlas layout. The following arguments must be supplied: k,
+gravity, ks, ksmax, and delta. See \code{?ForceAtlas2::layout.forceatlas2} for
+details and default values.}
 
 \item{subnet}{Logical determining if networks produced by
 \code{extract_subnetwork} should be treated as such, or just as a normal network
