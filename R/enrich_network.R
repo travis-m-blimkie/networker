@@ -19,12 +19,19 @@
 #'
 enrich_network <- function(network, filter = 0.05, background = NULL) {
 
+  message("Checking input...")
+  if (!all(c("tbl_graph", "igraph") %in% class(network_1))) {
+    stop("Argument 'network' must be a tidygraph object, produced by ",
+         "'build_network()'")
+  }
+
   input_entrez <- as_tibble(network) %>%
     dplyr::select(name) %>%
     left_join(biomart_id_mapping_human, by = c("name" = "ensembl_gene_id")) %>%
     pull(entrez_gene_id)
 
-  ReactomePA::enrichPathway(
+  message("Testing ", length(input_entrez), " genes for enriched pathways...")
+  output <- ReactomePA::enrichPathway(
     gene     = na.omit(input_entrez),
     organism = "human",
     universe = background
@@ -35,4 +42,7 @@ enrich_network <- function(network, filter = 0.05, background = NULL) {
     as_tibble() %>%
     filter(p_adjust < filter) %>%
     dplyr::select(id, description, "p_value" = pvalue, p_adjust, gene_id)
+
+  message("Done.\n")
+  return(output)
 }
