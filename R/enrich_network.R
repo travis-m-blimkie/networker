@@ -20,7 +20,7 @@
 enrich_network <- function(network, filter = 0.05, background = NULL) {
 
   message("Checking input...")
-  if (!all(c("tbl_graph", "igraph") %in% class(network_1))) {
+  if (!all(c("tbl_graph", "igraph") %in% class(network))) {
     stop("Argument 'network' must be a tidygraph object, produced by ",
          "'build_network()'")
   }
