@@ -2,11 +2,11 @@
 #'
 #' @param network tidygraph object, i.e. one output by `build_network` with
 #'   Ensembl IDs as node names
-#' @param filter Desired p-value threshold for filtering output pathways.
-#'   Defaults to 0.05.
+#' @param filter Desired adjusted p-value threshold for filtering output
+#'   pathways. Defaults to 0.05.
 #' @param background Optional background genes used when testing
 #'
-#' @return A tibble of enriched Reactome pathways
+#' @return A tibble of significantly enriched Reactome pathways
 #'
 #' @export
 #'
@@ -31,17 +31,19 @@ enrich_network <- function(network, filter = 0.05, background = NULL) {
     pull(entrez_gene_id)
 
   message("Testing ", length(input_entrez), " genes for enriched pathways...")
-  output <- ReactomePA::enrichPathway(
-    gene     = na.omit(input_entrez),
-    organism = "human",
-    universe = background
-  ) %>%
-    purrr::pluck("result") %>%
-    tibble::remove_rownames() %>%
-    janitor::clean_names() %>%
-    as_tibble() %>%
-    filter(p_adjust < filter) %>%
-    dplyr::select(id, description, "p_value" = pvalue, p_adjust, gene_id)
+  suppressPackageStartupMessages(
+    output <- ReactomePA::enrichPathway(
+      gene     = na.omit(input_entrez),
+      organism = "human",
+      universe = background
+    ) %>%
+      purrr::pluck("result") %>%
+      tibble::remove_rownames() %>%
+      janitor::clean_names() %>%
+      as_tibble() %>%
+      filter(p_adjust < filter) %>%
+      dplyr::select(id, description, "p_value" = pvalue, p_adjust, gene_id)
+  )
 
   message("Done.\n")
   return(output)
