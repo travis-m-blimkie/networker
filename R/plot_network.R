@@ -140,8 +140,7 @@ plot_network <- function(
       guides(fill = guide_legend(override.aes = list(size = 5)))
 
   } else if (fill_type == "two_sided") {
-    network <- network %>%
-      mutate(new_fill_col = {{fill_column}})
+    network <- mutate(network, new_fill_col = {{fill_column}})
     network_fill_geom <- scale_fill_distiller(
       palette  = "RdYlBu",
       na.value = int_colour,
@@ -151,12 +150,11 @@ plot_network <- function(
 
   } else if (fill_type == "one_sided") {
     network <- mutate(network, new_fill_col = {{fill_column}})
-    network_fill_geom <- scale_fill_viridis_c()
+    network_fill_geom <- scale_fill_viridis_c(option = "plasma", begin = 0.1)
     network_fill_guide <- NULL
 
   } else if (fill_type == "categorical") {
-    network <- network %>%
-      mutate(new_fill_col = {{fill_column}})
+    network <- mutate(network, new_fill_col = {{fill_column}})
     network_fill_geom <- scale_fill_brewer(
       palette  = "Set1",
       na.value = int_colour,
