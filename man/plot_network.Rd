@@ -121,6 +121,10 @@ Any layout supported by ggraph can be specified here - see
 support for the "force_atlas" method, implemented via the ForceAtlas2
 package.
 
+Since this function returns a standard ggplot object, you can tweak the
+final appearance using the normal array of ggplot2 function, e.g. \code{labs()}
+and \code{theme()} to further customize the final appearance.
+
 The \code{fill_type} argument will determine how the node colour is mapped to
 the desired column. "fold_change" represents a special case, where the fill
 column is numeric and whose values should be mapped to up (> 0) or down (<
