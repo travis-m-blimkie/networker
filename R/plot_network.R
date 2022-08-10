@@ -22,6 +22,10 @@
 #'   Defaults to "grey30".
 #' @param int_colour Fill colour for non-seed nodes, i.e. interactors. Defaults
 #'   to "grey70".
+#' @param fc_up_col Colour to use for up regulated nodes when `fill_type` is set
+#'   to "fold_change". Defaults to "firebrick3".
+#' @param fc_down_col Colour to use for down regulated nodes when `fill_type` is set
+#'   to "fold_change". Defaults to "#188119".
 #' @param label Boolean, whether labels should be added to nodes. Defaults to
 #'   FALSE.
 #' @param label_column Tidy-select column of the network/data to be used in
@@ -109,6 +113,8 @@ plot_network <- function(
   node_size      = c(3, 9),
   node_colour    = "grey30",
   int_colour     = "grey70",
+  fc_up_col      = "firebrick3",
+  fc_down_col    = "#188119",
   label          = FALSE,
   label_column,
   label_filter   = 0,
@@ -137,7 +143,7 @@ plot_network <- function(
         )
       )
     network_fill_geom <- scale_fill_manual(
-      values   = c("Up" = "firebrick3", "Down" = "#188119"),
+      values   = c("Up" = fc_up_col, "Down" = fc_down_col),
       na.value = int_colour
     )
     network_fill_guide <- guides(

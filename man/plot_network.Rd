@@ -17,6 +17,8 @@ plot_network(
   node_size = c(3, 9),
   node_colour = "grey30",
   int_colour = "grey70",
+  fc_up_col = "firebrick3",
+  fc_down_col = "#188119",
   label = FALSE,
   label_column,
   label_filter = 0,
@@ -66,6 +68,12 @@ Defaults to "grey30".}
 
 \item{int_colour}{Fill colour for non-seed nodes, i.e. interactors. Defaults
 to "grey70".}
+
+\item{fc_up_col}{Colour to use for up regulated nodes when \code{fill_type} is set
+to "fold_change". Defaults to "firebrick3".}
+
+\item{fc_down_col}{Colour to use for down regulated nodes when \code{fill_type} is set
+to "fold_change". Defaults to "#188119".}
 
 \item{label}{Boolean, whether labels should be added to nodes. Defaults to
 FALSE.}
