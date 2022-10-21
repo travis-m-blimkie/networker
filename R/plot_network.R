@@ -8,6 +8,9 @@
 #'   on how to set this up.
 #' @param fill_type String denoting type of fill mapping to perform for nodes.
 #'   Options are: "fold_change", "two_sided", "one_sided", or "categorical".
+#' @param cat_fill_colours Colour palette to be used when `fill_type` is set to
+#'   "categorical." Defaults to "Set1" from RColorBrewer. Will otherwise be
+#'   passed as the "values" argument in `scale_fill_manual()`.
 #' @param layout Layout of nodes in the network. Supports all layouts from
 #'   `ggraph`/`igraph`, as well as "force_atlas" (see Details).
 #' @param legend Should a legend be included? Defaults to FALSE.
@@ -104,6 +107,7 @@ plot_network <- function(
   network,
   fill_column,
   fill_type,
+  cat_fill_colours = "Set1",
   layout         = "kk",
   legend         = FALSE,
   fontfamily     = "Helvetica",
@@ -175,11 +179,16 @@ plot_network <- function(
 
   } else if (fill_type == "categorical") {
     network <- mutate(network, new_fill_col = {{fill_column}})
-    network_fill_geom <- scale_fill_brewer(
-      palette  = "Set1",
-      na.value = int_colour,
-      guide    = ifelse(legend, "legend", "none")
-    )
+
+    if (cat_fill_colours == "Set1") {
+      network_fill_geom <- scale_fill_brewer(
+        palette  = "Set1",
+        na.value = int_colour,
+        guide    = ifelse(legend, "legend", "none")
+      )
+    } else {
+      network_fill_geom <- scale_fill_manual(values = cat_fill_colours)
+    }
     network_fill_guide <-
       guides(fill = guide_legend(override.aes = list(size = 5)))
   } else {
@@ -199,16 +208,17 @@ plot_network <- function(
         plotstep = 0
       )
     } else {
+      message("Using custom ForceAtlas parameters...")
       layout_object <- ForceAtlas2::layout.forceatlas2(
-        graph    = network,
-        directed = FALSE,
-        plotstep = 0,
-        k = force_atlas_params$k,
-        gravity = force_atlas_params$gravity,
-        ks = force_atlas_params$ks,
-        ksmax = force_atlas_params$ksmax,
-        delta = force_atlas_params$delta,
-        center = force_atlas_params$center
+        graph      = network,
+        directed   = FALSE,
+        plotstep   = 0,
+        iterations = force_atlas_params$iterations,
+        gravity    = force_atlas_params$gravity,
+        k          = force_atlas_params$k,
+        ks         = force_atlas_params$ks,
+        ksmax      = force_atlas_params$ksmax,
+        delta      = force_atlas_params$delta
       )
     }
   } else {

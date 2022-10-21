@@ -8,6 +8,7 @@ plot_network(
   network,
   fill_column,
   fill_type,
+  cat_fill_colours = "Set1",
   layout = "kk",
   legend = FALSE,
   fontfamily = "Helvetica",
@@ -45,6 +46,10 @@ on how to set this up.}
 
 \item{fill_type}{String denoting type of fill mapping to perform for nodes.
 Options are: "fold_change", "two_sided", "one_sided", or "categorical".}
+
+\item{cat_fill_colours}{Colour palette to be used when \code{fill_type} is set to
+"categorical." Defaults to "Set1" from RColorBrewer. Will otherwise be
+passed as the "values" argument in \code{scale_fill_manual()}.}
 
 \item{layout}{Layout of nodes in the network. Supports all layouts from
 \code{ggraph}/\code{igraph}, as well as "force_atlas" (see Details).}
