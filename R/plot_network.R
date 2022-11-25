@@ -12,7 +12,8 @@
 #'   "categorical." Defaults to "Set1" from RColorBrewer. Will otherwise be
 #'   passed as the "values" argument in `scale_fill_manual()`.
 #' @param layout Layout of nodes in the network. Supports all layouts from
-#'   `ggraph`/`igraph`, as well as "force_atlas" (see Details).
+#'   `ggraph`/`igraph`, as well as "force_atlas" (see Details), or a data frame
+#'   of x and y coordinates for each node (order matters!).
 #' @param legend Should a legend be included? Defaults to FALSE.
 #' @param fontfamily Font to use for labels and legend (if present). Defaults to
 #'   "Helvetica".
@@ -180,7 +181,7 @@ plot_network <- function(
   } else if (fill_type == "categorical") {
     network <- mutate(network, new_fill_col = {{fill_column}})
 
-    if (cat_fill_colours == "Set1") {
+    if (all(cat_fill_colours == "Set1")) {
       network_fill_geom <- scale_fill_brewer(
         palette  = "Set1",
         na.value = int_colour,
@@ -198,7 +199,7 @@ plot_network <- function(
 
   # If we're using the Force Atlas layout, we need to pre-calculate the node
   # positions using the appropriate function from the ForceAtlas2 package
-  if (layout == "force_atlas") {
+  if (all(layout == "force_atlas")) {
     message("Calculating Force Atlas node positions...")
 
     if (is.null(force_atlas_params)) {
@@ -221,6 +222,9 @@ plot_network <- function(
         delta      = force_atlas_params$delta
       )
     }
+  } else if (is.data.frame(layout)) {
+    stopifnot(c("x", "y") %in% colnames(layout))
+    layout_object <- layout
   } else {
     layout_object <- layout
   }

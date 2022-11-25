@@ -52,7 +52,8 @@ Options are: "fold_change", "two_sided", "one_sided", or "categorical".}
 passed as the "values" argument in \code{scale_fill_manual()}.}
 
 \item{layout}{Layout of nodes in the network. Supports all layouts from
-\code{ggraph}/\code{igraph}, as well as "force_atlas" (see Details).}
+\code{ggraph}/\code{igraph}, as well as "force_atlas" (see Details), or a data frame
+of x and y coordinates for each node (order matters!).}
 
 \item{legend}{Should a legend be included? Defaults to FALSE.}
 
