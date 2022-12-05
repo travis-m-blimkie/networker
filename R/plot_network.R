@@ -223,8 +223,9 @@ plot_network <- function(
       )
     }
   } else if (is.data.frame(layout)) {
+    message("Using user-supplied node coordinates...")
     stopifnot(c("x", "y") %in% colnames(layout))
-    layout_object <- layout
+    layout_object <- dplyr::rename(layout, "x1" = x, "y1" = y)
   } else {
     layout_object <- layout
   }
