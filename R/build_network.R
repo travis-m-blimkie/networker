@@ -47,12 +47,28 @@ build_network <- function(df, col, order, hub_measure = "betweenness", ppi_data 
   lost_ids <- df[[col]][duplicated(df[[col]])]
 
   if (length(gene_vector) < nrow(df)) {
+
+    num_dups <- nrow(df) - length(gene_vector)
+
     message(paste0(
       "  INFO: Found ",
-      nrow(df) - length(gene_vector),
+      num_dups,
       " duplicate IDs in the input column, which have been removed:"
     ))
-    message("  ", paste(lost_ids, collapse = ", "))
+
+    if (num_dups <= 10) {
+      message(stringr::str_wrap(
+        paste(lost_ids, collapse = ", "),
+        indent = 2,
+        exdent = 2
+      ))
+    } else {
+      message(stringr::str_wrap(
+        paste0(paste(lost_ids[1:10], collapse = ", "), "..."),
+        indent = 2,
+        exdent = 2
+      ))
+    }
   }
 
   if (!grepl(x = gene_vector[1], pattern = "^ENSG")) {

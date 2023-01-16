@@ -10,13 +10,13 @@ enrich_network(network, filter = 0.05, background = NULL)
 \item{network}{tidygraph object, i.e. one output by \code{build_network} with
 Ensembl IDs as node names}
 
-\item{filter}{Desired p-value threshold for filtering output pathways.
-Defaults to 0.05.}
+\item{filter}{Desired adjusted p-value threshold for filtering output
+pathways. Defaults to 0.05.}
 
 \item{background}{Optional background genes used when testing}
 }
 \value{
-A tibble of enriched Reactome pathways
+A tibble of significantly enriched Reactome pathways
 }
 \description{
 Test a tidygraph network object for enriched Reactome pathways

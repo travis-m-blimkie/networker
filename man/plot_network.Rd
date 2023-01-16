@@ -8,6 +8,7 @@ plot_network(
   network,
   fill_column,
   fill_type,
+  cat_fill_colours = "Set1",
   layout = "kk",
   legend = FALSE,
   fontfamily = "Helvetica",
@@ -17,6 +18,8 @@ plot_network(
   node_size = c(3, 9),
   node_colour = "grey30",
   int_colour = "grey70",
+  fc_up_col = "firebrick3",
+  fc_down_col = "#188119",
   label = FALSE,
   label_column,
   label_filter = 0,
@@ -26,6 +29,7 @@ plot_network(
   label_face = "bold",
   label_padding = 0.25,
   min_seg_length = 0.25,
+  force_atlas_params = NULL,
   subnet = TRUE,
   seed = 1,
   ...
@@ -43,8 +47,13 @@ on how to set this up.}
 \item{fill_type}{String denoting type of fill mapping to perform for nodes.
 Options are: "fold_change", "two_sided", "one_sided", or "categorical".}
 
+\item{cat_fill_colours}{Colour palette to be used when \code{fill_type} is set to
+"categorical." Defaults to "Set1" from RColorBrewer. Will otherwise be
+passed as the "values" argument in \code{scale_fill_manual()}.}
+
 \item{layout}{Layout of nodes in the network. Supports all layouts from
-\code{ggraph}/\code{igraph}, as well as "force_atlas" (see Details).}
+\code{ggraph}/\code{igraph}, as well as "force_atlas" (see Details), or a data frame
+of x and y coordinates for each node (order matters!).}
 
 \item{legend}{Should a legend be included? Defaults to FALSE.}
 
@@ -65,6 +74,12 @@ Defaults to "grey30".}
 
 \item{int_colour}{Fill colour for non-seed nodes, i.e. interactors. Defaults
 to "grey70".}
+
+\item{fc_up_col}{Colour to use for up regulated nodes when \code{fill_type} is set
+to "fold_change". Defaults to "firebrick3".}
+
+\item{fc_down_col}{Colour to use for down regulated nodes when \code{fill_type} is set
+to "fold_change". Defaults to "#188119".}
 
 \item{label}{Boolean, whether labels should be added to nodes. Defaults to
 FALSE.}
@@ -92,6 +107,11 @@ on calculated hub score) are highlighted with this colour, if \code{label = TRUE
 points. The default specified here is 0.25, half of the normal default
 value.}
 
+\item{force_atlas_params}{List of parameters to tweak node positions when
+using the Force Atlas layout. The following arguments must be supplied: k,
+gravity, ks, ksmax, and delta. See \code{?ForceAtlas2::layout.forceatlas2} for
+details and default values.}
+
 \item{subnet}{Logical determining if networks produced by
 \code{extract_subnetwork} should be treated as such, or just as a normal network
 from \code{build_network}.}
@@ -114,6 +134,10 @@ Any layout supported by ggraph can be specified here - see
 \code{?layout_tbl_graph_igraph} for a list of options. Additionally, there is
 support for the "force_atlas" method, implemented via the ForceAtlas2
 package.
+
+Since this function returns a standard ggplot object, you can tweak the
+final appearance using the normal array of ggplot2 function, e.g. \code{labs()}
+and \code{theme()} to further customize the final appearance.
 
 The \code{fill_type} argument will determine how the node colour is mapped to
 the desired column. "fold_change" represents a special case, where the fill

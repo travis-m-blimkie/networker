@@ -8,8 +8,12 @@
 #'   on how to set this up.
 #' @param fill_type String denoting type of fill mapping to perform for nodes.
 #'   Options are: "fold_change", "two_sided", "one_sided", or "categorical".
+#' @param cat_fill_colours Colour palette to be used when `fill_type` is set to
+#'   "categorical." Defaults to "Set1" from RColorBrewer. Will otherwise be
+#'   passed as the "values" argument in `scale_fill_manual()`.
 #' @param layout Layout of nodes in the network. Supports all layouts from
-#'   `ggraph`/`igraph`, as well as "force_atlas" (see Details).
+#'   `ggraph`/`igraph`, as well as "force_atlas" (see Details), or a data frame
+#'   of x and y coordinates for each node (order matters!).
 #' @param legend Should a legend be included? Defaults to FALSE.
 #' @param fontfamily Font to use for labels and legend (if present). Defaults to
 #'   "Helvetica".
@@ -22,6 +26,10 @@
 #'   Defaults to "grey30".
 #' @param int_colour Fill colour for non-seed nodes, i.e. interactors. Defaults
 #'   to "grey70".
+#' @param fc_up_col Colour to use for up regulated nodes when `fill_type` is set
+#'   to "fold_change". Defaults to "firebrick3".
+#' @param fc_down_col Colour to use for down regulated nodes when `fill_type` is set
+#'   to "fold_change". Defaults to "#188119".
 #' @param label Boolean, whether labels should be added to nodes. Defaults to
 #'   FALSE.
 #' @param label_column Tidy-select column of the network/data to be used in
@@ -40,6 +48,10 @@
 #' @param min_seg_length Minimum length of lines to be drawn from labels to
 #'   points. The default specified here is 0.25, half of the normal default
 #'   value.
+#' @param force_atlas_params List of parameters to tweak node positions when
+#'   using the Force Atlas layout. The following arguments must be supplied: k,
+#'   gravity, ks, ksmax, and delta. See `?ForceAtlas2::layout.forceatlas2` for
+#'   details and default values.
 #' @param subnet Logical determining if networks produced by
 #'   `extract_subnetwork` should be treated as such, or just as a normal network
 #'   from `build_network`.
@@ -61,6 +73,10 @@
 #'   `?layout_tbl_graph_igraph` for a list of options. Additionally, there is
 #'   support for the "force_atlas" method, implemented via the ForceAtlas2
 #'   package.
+#'
+#'   Since this function returns a standard ggplot object, you can tweak the
+#'   final appearance using the normal array of ggplot2 function, e.g. `labs()`
+#'   and `theme()` to further customize the final appearance.
 #'
 #'   The `fill_type` argument will determine how the node colour is mapped to
 #'   the desired column. "fold_change" represents a special case, where the fill
@@ -92,6 +108,7 @@ plot_network <- function(
   network,
   fill_column,
   fill_type,
+  cat_fill_colours = "Set1",
   layout         = "kk",
   legend         = FALSE,
   fontfamily     = "Helvetica",
@@ -101,6 +118,8 @@ plot_network <- function(
   node_size      = c(3, 9),
   node_colour    = "grey30",
   int_colour     = "grey70",
+  fc_up_col      = "firebrick3",
+  fc_down_col    = "#188119",
   label          = FALSE,
   label_column,
   label_filter   = 0,
@@ -110,6 +129,7 @@ plot_network <- function(
   label_face     = "bold",
   label_padding  = 0.25,
   min_seg_length = 0.25,
+  force_atlas_params = NULL,
   subnet         = TRUE,
   seed           = 1,
   ...
@@ -128,35 +148,48 @@ plot_network <- function(
         )
       )
     network_fill_geom <- scale_fill_manual(
-      values   = c("Up" = "firebrick3", "Down" = "#188119"),
+      values   = c("Up" = fc_up_col, "Down" = fc_down_col),
       na.value = int_colour
     )
-    network_fill_guide <-
-      guides(fill = guide_legend(override.aes = list(size = 5)))
+    network_fill_guide <- guides(
+      fill = guide_legend(title = "Direction", override.aes = list(size = 5))
+    )
 
   } else if (fill_type == "two_sided") {
-    network <- network %>%
-      mutate(new_fill_col = {{fill_column}})
-    network_fill_geom <- scale_fill_distiller(
-      palette  = "RdYlBu",
+    network <- mutate(network, new_fill_col = {{fill_column}})
+    network_fill_geom <- scale_fill_gradient2(
+      low  = "#313695",
+      # mid  = "#ffffbf",
+      mid  = "white",
+      high = "#a50026",
+      midpoint = 0,
       na.value = int_colour,
       guide    = ifelse(legend, "colourbar", "none")
     )
+    # network_fill_geom <- scale_fill_distiller(
+    #   palette  = "RdYlBu",
+    #   na.value = int_colour,
+    #   guide    = ifelse(legend, "colourbar", "none")
+    # )
     network_fill_guide <- NULL
 
   } else if (fill_type == "one_sided") {
     network <- mutate(network, new_fill_col = {{fill_column}})
-    network_fill_geom <- scale_fill_viridis_c()
+    network_fill_geom <- scale_fill_viridis_c(option = "plasma", begin = 0.2)
     network_fill_guide <- NULL
 
   } else if (fill_type == "categorical") {
-    network <- network %>%
-      mutate(new_fill_col = {{fill_column}})
-    network_fill_geom <- scale_fill_brewer(
-      palette  = "Set1",
-      na.value = int_colour,
-      guide    = ifelse(legend, "legend", "none")
-    )
+    network <- mutate(network, new_fill_col = {{fill_column}})
+
+    if (all(cat_fill_colours == "Set1")) {
+      network_fill_geom <- scale_fill_brewer(
+        palette  = "Set1",
+        na.value = int_colour,
+        guide    = ifelse(legend, "legend", "none")
+      )
+    } else {
+      network_fill_geom <- scale_fill_manual(values = cat_fill_colours)
+    }
     network_fill_guide <-
       guides(fill = guide_legend(override.aes = list(size = 5)))
   } else {
@@ -166,13 +199,33 @@ plot_network <- function(
 
   # If we're using the Force Atlas layout, we need to pre-calculate the node
   # positions using the appropriate function from the ForceAtlas2 package
-  if (layout == "force_atlas") {
+  if (all(layout == "force_atlas")) {
     message("Calculating Force Atlas node positions...")
-    layout_object <- ForceAtlas2::layout.forceatlas2(
-      graph    = network,
-      directed = FALSE,
-      plotstep = 0
-    )
+
+    if (is.null(force_atlas_params)) {
+      layout_object <- ForceAtlas2::layout.forceatlas2(
+        graph    = network,
+        directed = FALSE,
+        plotstep = 0
+      )
+    } else {
+      message("Using custom ForceAtlas parameters...")
+      layout_object <- ForceAtlas2::layout.forceatlas2(
+        graph      = network,
+        directed   = FALSE,
+        plotstep   = 0,
+        iterations = force_atlas_params$iterations,
+        gravity    = force_atlas_params$gravity,
+        k          = force_atlas_params$k,
+        ks         = force_atlas_params$ks,
+        ksmax      = force_atlas_params$ksmax,
+        delta      = force_atlas_params$delta
+      )
+    }
+  } else if (is.data.frame(layout)) {
+    message("Using user-supplied node coordinates...")
+    stopifnot(c("x", "y") %in% colnames(layout))
+    layout_object <- dplyr::rename(layout, "x1" = x, "y1" = y)
   } else {
     layout_object <- layout
   }
@@ -182,6 +235,15 @@ plot_network <- function(
 
   # Get fill_column as a string, so we can clean it up if the legend is included
   legend_name <- match.call()$fill_column
+
+  # Theme tweaks for all plot types
+  theme_tweaks <- theme(
+    text         = element_text(family = fontfamily),
+    plot.margin  = unit(rep(0, 4), "cm"),
+    legend.title = element_text(size = 16),
+    legend.text  = element_text(size = 14),
+    ...
+  )
 
 
   # If the network being plotted is a subnetwork (i.e. generated by
@@ -230,12 +292,7 @@ plot_network <- function(
       scale_size_continuous(range = node_size, guide = "none") +
       scale_colour_manual(values = c("y" = hub_colour, "n" = label_colour)) +
       labs(fill = NULL) +
-      theme(
-        text         = element_text(family = fontfamily),
-        plot.margin  = unit(rep(0, 4), "cm"),
-        legend.text  = element_text(size = 14),
-        ...
-      ) +
+      theme_tweaks +
       network_fill_guide
 
   } else if (label) {
@@ -275,12 +332,7 @@ plot_network <- function(
       scale_size_continuous(range = node_size, guide = "none") +
       scale_colour_manual(values = c("y" = hub_colour, "n" = label_colour)) +
       labs(fill = NULL) +
-      theme(
-        text         = element_text(family = fontfamily),
-        plot.margin  = unit(rep(0, 4), "cm"),
-        legend.text  = element_text(size = 14),
-        ...
-      ) +
+      theme_tweaks +
       network_fill_guide
 
   } else {
@@ -290,11 +342,6 @@ plot_network <- function(
       network_fill_geom +
       scale_size_continuous(range = node_size, guide = "none") +
       labs(fill = NULL) +
-      theme(
-        text         = element_text(family = fontfamily),
-        plot.margin  = unit(rep(0, 4), "cm"),
-        legend.text  = element_text(size = 14),
-        ...
-      )
+      theme_tweaks
   }
 }

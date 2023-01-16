@@ -1,6 +1,6 @@
 Package: networker
 Title: Reproducible PPI Network Creation and Visualization in R
-Version: 0.01
+Version: 0.1.14
 Authors@R:
     person("Travis", "Blimkie", , "travis.m.blimkie@gmail.com", role = c("aut", "cre"))
 Description: A suite of functions to make it simple to construct PPI networks
@@ -8,7 +8,7 @@ Description: A suite of functions to make it simple to construct PPI networks
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.2
 Imports: 
     dplyr,
     ForceAtlas2,
