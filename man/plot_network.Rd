@@ -133,7 +133,10 @@ Plot an undirected PPI network using ggraph
 Any layout supported by ggraph can be specified here - see
 \code{?layout_tbl_graph_igraph} for a list of options. Additionally, there is
 support for the "force_atlas" method, implemented via the ForceAtlas2
-package.
+package. Finally, you can also supply a data frame containing coordinates
+for each node. The first and second columns will be used for x and y,
+respectively. Note that having columns named "x" and "y" in the input
+network will generate a warning message when supplying custom coordinates.
 
 Since this function returns a standard ggplot object, you can tweak the
 final appearance using the normal array of ggplot2 function, e.g. \code{labs()}
