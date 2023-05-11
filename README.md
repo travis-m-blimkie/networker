@@ -10,8 +10,9 @@ already installed):
 devtools::install_github("https://github.com/travis-m-blimkie/networker")
 ```
 
-If you run into installation issues relating to the package `biomaRt` or `ReactomePA` (which are
-dependencies of `networker`), you can install them with the following:
+If you run into installation issues relating to the package `biomaRt` or 
+`ReactomePA` (which are dependencies of `networker`), you can install them with 
+the following:
 ```r
 if (!require("BiocManager")) { # Optionally install BiocManager if needed
   install.packages("BiocManager")
